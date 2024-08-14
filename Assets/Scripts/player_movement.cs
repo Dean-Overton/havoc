@@ -1,28 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class TopDownCharacterMover : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float drag = 1f;
-    private Rigidbody rb;
+    [SerializeField]
+    private float MovementSpeed; // Speed at which the character moves
 
-    private void Start()
+    [SerializeField]
+    private Camera Camera; // Reference to the camera used to calculate mouse position
+
+    private Vector2 _inputVector; // Stores player input
+
+    void Update()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.drag = drag;
+        // Collect input from the player
+        GetInput();
 
+        // Create a target movement vector based on input
+        var targetVector = new Vector3(_inputVector.x, 0, _inputVector.y);
+
+        // Move the character towards the target direction
+        MoveTowardTarget(targetVector);
     }
 
-    private void Update()
+    private void GetInput()
     {
-        // Get input
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        // Get horizontal and vertical input from the player (usually WSAD or arrow keys)
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
 
-        // Calculate the direction of the movement
-        Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
+        // Create a vector based on the input
+        _inputVector = new Vector2(moveX, moveZ);
+    }
 
-        // Set the velocity directly
-        rb.velocity = moveDirection * moveSpeed;
+    private void MoveTowardTarget(Vector3 targetVector)
+    {
+        // Calculate the movement speed adjusted for frame time
+        var speed = MovementSpeed * Time.deltaTime;
+
+        // Adjust the target vector based on the camera’s rotation
+        targetVector = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0) * targetVector;
+
+        // Calculate the new position based on the movement vector
+        var targetPosition = transform.position + targetVector * speed;
+        transform.position = targetPosition;
     }
 }
