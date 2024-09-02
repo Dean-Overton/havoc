@@ -244,7 +244,7 @@ Transform:
   m_GameObject: {fileID: 315293897}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.058182955, y: 0.037293673, z: -0.08270097}
+  m_LocalPosition: {x: 9.04, y: 0.037293673, z: -0.08270097}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -669,6 +669,7 @@ GameObject:
   - component: {fileID: 1332195367}
   - component: {fileID: 1332195366}
   - component: {fileID: 1332195365}
+  - component: {fileID: 1332195368}
   m_Layer: 0
   m_Name: playerBody
   m_TagString: Untagged
@@ -765,6 +766,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1332195363}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1332195368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332195363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e430b2f0189b8a24284b0b6cfa6ba92c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  passiveRegen: 1
+  passiveRegenHealthPerSecond: 1
+  regenInterval: 1
 --- !u!1 &1877345165
 GameObject:
   m_ObjectHideFlags: 0
@@ -777,8 +795,9 @@ GameObject:
   - component: {fileID: 1877345169}
   - component: {fileID: 1877345168}
   - component: {fileID: 1877345167}
+  - component: {fileID: 1877345170}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Turret
   m_TagString: LockOnAble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -870,6 +889,25 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1877345165}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1877345170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877345165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43bd24b6714c94b449cd6899b4637c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 57860765119014210, guid: 5ca1bbf4fe02d6844a1e28b28a5ce38e,
+    type: 3}
+  target: {fileID: 315293898}
+  bulletSpeed: 20
+  fireRate: 1
+  spawnHeight: 2
+  bulletDamage: 50
 --- !u!1 &1931096331
 GameObject:
   m_ObjectHideFlags: 0
