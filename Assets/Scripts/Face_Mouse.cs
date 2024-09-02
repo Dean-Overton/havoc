@@ -9,7 +9,7 @@ public class CharacterFacing : MonoBehaviour
     private bool RotateTowardMouse = true; // Whether the character should rotate towards the mouse position
 
     [SerializeField]
-    private float RotationSpeed = 5f; // Speed at which the character rotates
+    private float RotationSpeed = 500f; // Speed at which the character rotates
 
     [SerializeField]
     private float LockOnDistance = 10f; // Maximum distance for lock-on
