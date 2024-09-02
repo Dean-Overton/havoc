@@ -55,7 +55,6 @@ public class CharacterFacing : MonoBehaviour
             // Get the point where the ray hit the object
             Vector3 target = hitInfo.point;
             target.y = transform.position.y; // Keep the target on the same vertical level as the character
-            Debug.Log("trying to look at " +  target);
 
             // Rotate the character to look at the target point
             Vector3 directionToTarget = target - transform.position;
@@ -83,7 +82,7 @@ public class CharacterFacing : MonoBehaviour
         {
             // Create a ray from the camera to the mouse position
             Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
-           
+
             // Check if the ray hits any object
             if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
