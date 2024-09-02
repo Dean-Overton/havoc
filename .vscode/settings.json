@@ -52,9 +52,6 @@
         "temp/": true,
         "Temp/": true
     },
-<<<<<<< HEAD
+    "CSCI356_GroupProject.sln=======dotnet.defaultSolution": "Naughty Nemesis.sln>>>>>>>043560ff6526d30958fc20813fc1bf73534a4034",
     "dotnet.defaultSolution": "CSCI356_GroupProject.sln"
-=======
-    "dotnet.defaultSolution": "Naughty Nemesis.sln"
->>>>>>> 043560ff6526d30958fc20813fc1bf73534a4034
 }
