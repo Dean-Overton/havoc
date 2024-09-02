@@ -9,7 +9,7 @@ public class damage : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         // Check if the object hit has a HealthComponent
-        Debug.Log($"Applying {bulletDamage} damage beforre searching for component ");
+        //Debug.Log($"Applying {bulletDamage} damage beforre searching for component ");
         health_component healthComponent = collision.gameObject.GetComponent<health_component>();
 
         if (healthComponent != null)

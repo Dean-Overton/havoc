@@ -14,8 +14,11 @@ public class BulletFiringScript : MonoBehaviour
     {
         if (Time.time >= nextFireTime)
         {
-            FireBullet();
-            nextFireTime = Time.time + 1f / fireRate;
+            if (target != null)
+            {
+                FireBullet();
+                nextFireTime = Time.time + 1f / fireRate;
+            }
         }
     }
 
@@ -28,7 +31,12 @@ public class BulletFiringScript : MonoBehaviour
         Vector3 direction = (target.position - firePosition).normalized;
 
         // Instantiate the bullet at the fire position
-        GameObject bullet = Instantiate(bulletPrefab, firePosition, Quaternion.LookRotation(direction));
+        GameObject bullet = Instantiate(bulletPrefab, firePosition, Quaternion.identity);
+
+
+        // Rotate the bullet to face the direction
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        bullet.transform.rotation = rotation;
 
         // Set the bullet's velocity to move towards the target
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
@@ -36,6 +44,8 @@ public class BulletFiringScript : MonoBehaviour
         {
             rb.velocity = direction * bulletSpeed;
         }
+
+        // Set the bullet's damage
         damage dm = bullet.GetComponent<damage>();
         if (dm != null)
         {
