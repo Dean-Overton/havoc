@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class _CharacterController : MonoBehaviour   // This was renamed as it uses the same name as a Unity built-in component, it will not work otherwise
 {
     public float moveSpeed = 8f;
     public bool isRun = false;
