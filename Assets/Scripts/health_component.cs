@@ -12,6 +12,10 @@ public class health_component : MonoBehaviour
     private float regenTimer = 0f; // Timer to track when to regenerate health
     [SerializeField] float regenInterval = 1f; // Time interval for health regeneration (in seconds)
 
+    // the logic to handle when the player is killed to broadcast it to the game controller
+    public delegate void PlayerDied();
+    public event PlayerDied OnPlayerDeath;
+
     public void SetCurrentHealth(int increment)
     {
         currentHealth = Mathf.Clamp(increment, 0, maxHealth); // Ensure health is within valid range
@@ -48,7 +52,8 @@ public class health_component : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth - increment, 0);
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            OnPlayerDeath.Invoke();     // Sending a public event that the player has died
+            Destroy(gameObject);        // Destroying the Player Body Object
         }
     }
 
@@ -91,7 +96,8 @@ public class health_component : MonoBehaviour
         // Destroy the object if health is 0 or below
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            OnPlayerDeath.Invoke();     // Sending a public event that the player has died
+            Destroy(gameObject);        // Destroying the Player Body Object
         }
     }
 }
