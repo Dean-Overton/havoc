@@ -1,0 +1,33 @@
+.header {
+    font-size: 150px;
+    color: rgb(255, 255, 255);
+    white-space: normal;
+    -unity-text-align: upper-center;
+    -unity-font-style: bold;
+    margin-top: 100px;
+}
+
+.button {
+    font-size: 50px;
+    width: 400px;
+    height: 100px;
+    align-items: center;
+    justify-content: space-around;
+    align-self: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    margin-top: 5%;
+    margin-right: 10px;
+    margin-bottom: 5%;
+    margin-left: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0;
+    padding-left: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}

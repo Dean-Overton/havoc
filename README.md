@@ -1,4 +1,11 @@
-## GitHub Flow/Collaboration
+# Reninder not to commit to main :pray:
+# How to play the game
+* Make sure you are on the `Main Menu` scene
+* Then click the `New Game` button
+
+
+
+# GitHub Flow/Collaboration
 1. Create a Branch
 - Always create a new branch for each feature or bugfix. This keeps your work separate from the main codebase.
 - ```git switch -c feature-branch-name```
