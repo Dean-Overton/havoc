@@ -18,10 +18,13 @@ public class TopDownCharacterMover : MonoBehaviour
     private Vector3 _velocity;             // Velocity to apply gravity
     private bool _isGrounded;              // Whether the player is on the ground
 
+    private Animator animator;
+
     void Start()
     {
         // Get the CharacterController component on the player object
         _characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -74,6 +77,13 @@ public class TopDownCharacterMover : MonoBehaviour
 
         // Move the character using the CharacterController component (with horizontal movement)
         _characterController.Move(targetVector * speed);
+
+        // Calculate the magnitude of the targetVector (this represents the movement speed)
+        float movementMagnitude = targetVector.magnitude;
+
+        // Set the speed in the animator based on the magnitude of the movement
+        animator.SetFloat("Speed", movementMagnitude);
+        Debug.Log(animator.GetFloat("Speed"));
     }
 
     private void ApplyGravity()
