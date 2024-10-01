@@ -5,23 +5,53 @@ using UnityEngine;
 public class TopDownCharacterMover : MonoBehaviour
 {
     [SerializeField]
-    private float MovementSpeed; // Speed at which the character moves
-
+    private float MovementSpeed = 5f;      // Speed at which the character moves
     [SerializeField]
-    private Camera Camera; // Reference to the camera used to calculate mouse position
+    private Camera Camera;                 // Reference to the camera used to calculate mouse position
+    [SerializeField]
+    private float gravity = -9.81f;        // Gravity force
+    [SerializeField]
+    private float groundCheckDistance = 0.1f;  // Distance to check for the ground
 
-    private Vector2 _inputVector; // Stores player input
+    private Vector2 _inputVector;          // Stores player input
+    private CharacterController _characterController;  // Reference to the CharacterController component
+    private Vector3 _velocity;             // Velocity to apply gravity
+    private bool _isGrounded;              // Whether the player is on the ground
+
+    void Start()
+    {
+        // Get the CharacterController component on the player object
+        _characterController = GetComponent<CharacterController>();
+    }
 
     void Update()
     {
+        // Check if the player is grounded by casting down from the character
+        GroundCheck();
+
         // Collect input from the player
         GetInput();
 
         // Create a target movement vector based on input
         var targetVector = new Vector3(_inputVector.x, 0, _inputVector.y);
 
-        // Move the character towards the target direction
+        // Move the character towards the target direction using CharacterController
         MoveTowardTarget(targetVector);
+
+        // Apply gravity
+        ApplyGravity();
+    }
+
+    private void GroundCheck()
+    {
+        // Check if the character is on the ground
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + _characterController.height / 2);
+
+        // Reset velocity on the Y-axis if grounded
+        if (_isGrounded && _velocity.y < 0)
+        {
+            _velocity.y = -2f;  // Small value to keep the character grounded
+        }
     }
 
     private void GetInput()
@@ -39,11 +69,22 @@ public class TopDownCharacterMover : MonoBehaviour
         // Calculate the movement speed adjusted for frame time
         var speed = MovementSpeed * Time.deltaTime;
 
-        // Adjust the target vector based on the camera’s rotation
+        // Adjust the target vector based on the cameraâ€™s rotation
         targetVector = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0) * targetVector;
 
-        // Calculate the new position based on the movement vector
-        var targetPosition = transform.position + targetVector * speed;
-        transform.position = targetPosition;
+        // Move the character using the CharacterController component (with horizontal movement)
+        _characterController.Move(targetVector * speed);
+    }
+
+    private void ApplyGravity()
+    {
+        // Apply gravity when not grounded
+        if (!_isGrounded)
+        {
+            _velocity.y += gravity * Time.deltaTime; // Increase downward velocity over time
+        }
+
+        // Apply the Y velocity (gravity) to the character
+        _characterController.Move(_velocity * Time.deltaTime);
     }
 }
