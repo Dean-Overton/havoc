@@ -19,12 +19,17 @@ public class TopDownCharacterMover : MonoBehaviour
     private bool _isGrounded;              // Whether the player is on the ground
 
     private Animator animator;
+    public bool isMovingBackwards;
+
+
+    //TODO
 
     void Start()
     {
         // Get the CharacterController component on the player object
         _characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
     }
 
     void Update()
@@ -43,6 +48,17 @@ public class TopDownCharacterMover : MonoBehaviour
 
         // Apply gravity
         ApplyGravity();
+
+        // Convert input vector to local space relative to the character's orientation
+        Vector3 localInput = transform.InverseTransformDirection(targetVector);
+
+        // Set the converted local space values to the animator
+        animator.SetFloat("Horizontal", localInput.x);  // Set Horizontal (left/right strafing)
+        animator.SetFloat("Vertical", localInput.z);    // Set Vertical (forward/backward movement)
+
+        // You can check if the character is moving backwards or forwards based on localInput.z
+        bool isMovingBackwards = localInput.z < 0;
+        animator.SetBool("isRunningBackwards", isMovingBackwards);
     }
 
     private void GroundCheck()
@@ -69,6 +85,12 @@ public class TopDownCharacterMover : MonoBehaviour
 
     private void MoveTowardTarget(Vector3 targetVector)
     {
+        // Normalize the target vector to prevent faster diagonal movement
+        if (targetVector.magnitude > 1f)
+        {
+            targetVector.Normalize();  // Ensures diagonal movement doesn't exceed max speed
+        }
+
         // Calculate the movement speed adjusted for frame time
         var speed = MovementSpeed * Time.deltaTime;
 
@@ -83,7 +105,19 @@ public class TopDownCharacterMover : MonoBehaviour
 
         // Set the speed in the animator based on the magnitude of the movement
         animator.SetFloat("Speed", movementMagnitude);
-        Debug.Log(animator.GetFloat("Speed"));
+        bool isMovingBackwards = CheckIfMovingBackwards(targetVector);
+        animator.SetBool("isRunningBackwards", isMovingBackwards);
+        // Only rotate the character if there is movement, and the character is not shooting
+        if(GetComponent<GunController>().isShooting == false)  {
+            if (targetVector.magnitude > 0.1f)
+            {
+                // Determine the rotation direction
+                Quaternion toRotation = Quaternion.LookRotation(targetVector);
+
+                // Smoothly rotate the player character towards the movement direction
+                transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, speed * 5f); // Adjust rotation speed multiplier if needed
+            }
+        }
     }
 
     private void ApplyGravity()
@@ -96,5 +130,25 @@ public class TopDownCharacterMover : MonoBehaviour
 
         // Apply the Y velocity (gravity) to the character
         _characterController.Move(_velocity * Time.deltaTime);
+    }
+
+    private bool CheckIfMovingBackwards(Vector3 targetVector)
+    {
+        // Ray from camera to mouse
+        Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+        // Calculate the point on the player's Y-plane that the mouse points to
+        float playerY = transform.position.y;
+        float distanceToYPlane = (playerY - ray.origin.y) / ray.direction.y;
+        Vector3 mousePositionInWorld = ray.origin + ray.direction * distanceToYPlane;
+
+        // Direction from player to mouse
+        Vector3 directionToMouse = (mousePositionInWorld - transform.position).normalized;
+
+        // Check the dot product between movement direction and direction to mouse
+        // If the dot product is negative, the player is moving in the opposite direction from the mouse
+        float dot = Vector3.Dot(targetVector.normalized, directionToMouse);
+
+        return dot < 0;  // Negative dot means moving backwards
     }
 }

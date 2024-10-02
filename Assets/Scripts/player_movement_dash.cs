@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TeleportSlash : MonoBehaviour
 {
-    public float teleportDistance = 5f;    // Distance of the teleport
+    public float teleportDistance = 5f;    // Maximum distance of the teleport
     public int damage = 10;                // Damage dealt to enemies
     public LayerMask enemyLayer;           // LayerMask to identify enemies
     public GameObject linePrefab;          // Prefab for the line renderer
@@ -51,8 +51,8 @@ public class TeleportSlash : MonoBehaviour
             return; // If no CharacterController, exit early to avoid errors
         }
 
-        // Determine teleport direction based on character's facing direction
-        Vector3 teleportDirection = transform.forward;
+        // Determine the teleport direction based on mouse position
+        Vector3 teleportDirection = GetMouseDirection();
 
         // Perform a raycast to check for enemies in the teleport path
         RaycastHit[] hits = Physics.RaycastAll(transform.position, teleportDirection, teleportDistance, enemyLayer);
@@ -84,6 +84,25 @@ public class TeleportSlash : MonoBehaviour
 
         // Move the character using the CharacterController
         _characterController.Move(moveDirection);
+    }
+
+    // Function to get the direction from the player to the mouse cursor in world space
+    Vector3 GetMouseDirection()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Cast a ray from the camera to the mouse position
+
+        // Assume the player is on a flat plane (XZ plane)
+        Plane plane = new Plane(Vector3.up, transform.position);
+        float distanceToPlane;
+
+        if (plane.Raycast(ray, out distanceToPlane))
+        {
+            Vector3 targetPoint = ray.GetPoint(distanceToPlane); // Get the point on the plane where the ray hits
+            Vector3 direction = (targetPoint - transform.position).normalized; // Calculate the direction from the player to the mouse
+            return direction;
+        }
+
+        return transform.forward; // Fallback to forward if something goes wrong
     }
 
     void SpawnTeleportLine(Vector3 start, Vector3 end)
