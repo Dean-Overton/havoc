@@ -9,6 +9,9 @@ public class CastProjectile : MonoBehaviour
 
     public Vector3 startDirection;
 
+    public float damageRadius = 1.5f;
+    public int damage = 10;
+
     void Start() {
         // Set the target position to the player's position
         targetPosition = GameObject.Find("Player").transform.position;
@@ -41,5 +44,22 @@ public class CastProjectile : MonoBehaviour
     }
     float CalculateForceRequired () {
         return 10f;
+    }
+    private void OnCollisionEnter(Collision other) {
+        // Deal damage to the player
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, damageRadius);
+        foreach (var hitCollider in hitColliders) {
+            if (hitCollider.CompareTag("Player")) {
+                if (hitCollider.TryGetComponent<health_component>(out health_component healthComponent)) {
+                    healthComponent.ReduceCurrentHealth(damage);
+                }
+            }
+        }
+        // Destroy the projectile
+        Destroy(gameObject);
+    }
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, damageRadius);
     }
 }

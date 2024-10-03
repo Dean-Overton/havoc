@@ -13,12 +13,16 @@ public class PlantController : EnemyController
     [Header("Cast Attack Settings")]
     [SerializeField] private float castAttackDistance = 2f;
     [SerializeField] private float castChargeTime = 2f;
+    
+    [SerializeField] private int castDamage = 10;
     [SerializeField] private GameObject castProjectile;
     [SerializeField] private Transform castPoint;
     [Header("Jump Attack Settings")]
     [SerializeField] private float jumpAttackDistanceMax = 5f;
     [SerializeField] private float jumpAttackDistanceMin = 3f;
     [SerializeField] private float jumpAttackSpeed = 5f;
+    
+    [SerializeField] private int jumpDamage = 30;
 
     
     protected override void Start() {
@@ -232,7 +236,7 @@ public class PlantController : EnemyController
         GetComponent<Animator>().SetTrigger("attack1");
 
         // Apply damage to player
-        ApplySwipeDamage();
+        ApplySwipeDamage(jumpDamage);
 
         // Wait for jump animation to finish
         yield return new WaitForSeconds(0.6f);
@@ -247,13 +251,15 @@ public class PlantController : EnemyController
         GetComponentInChildren<Animator>().SetTrigger("castStart");
 
         float adjustmentAngle = Random.Range(-20, 0);
-        Vector3 directionToPlayer = playerPosition - transform.position;
+        Vector3 targetPosition = playerPosition - transform.up * 0.5f;
+        Vector3 directionToPlayer = playerPosition - targetPosition;
         // Ajust direction to point 45 degrees up from direction to player
         directionToPlayer = Quaternion.Euler(adjustmentAngle, 0, 0) * Quaternion.Euler(87,0,0) * directionToPlayer;
 
         GameObject castInstance = Instantiate(castProjectile, castPoint.position, Quaternion.identity);
         castInstance.GetComponent<CastProjectile>().targetPosition = playerPosition;
         castInstance.GetComponent<CastProjectile>().startDirection = directionToPlayer;
+        castInstance.GetComponent<CastProjectile>().damage = castDamage;
 
         // Wait for cast charge time
         yield return new WaitForSeconds(castChargeTime);
@@ -269,7 +275,7 @@ public class PlantController : EnemyController
         StartCoroutine(Cooldown());
     }
     
-    public void ApplySwipeDamage()
+    public void ApplySwipeDamage(int thisDamage = 20)
     {
         // do phyics collision in front of plant and check if player is hit
         // if player is hit, apply damage
@@ -281,7 +287,7 @@ public class PlantController : EnemyController
         {
             if (hitCollider.CompareTag("Player"))
             {
-                hitCollider.GetComponent<health_component>().ReduceCurrentHealth(attackSwipeDamage);
+                hitCollider.GetComponent<health_component>().ReduceCurrentHealth(thisDamage);
 
                 break; // Only hit the player once
             }
