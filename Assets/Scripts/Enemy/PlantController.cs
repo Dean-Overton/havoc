@@ -7,10 +7,13 @@ using UnityEngine.AI;
 // All behaviours for groot plant enemy
 public class PlantController : EnemyController
 {
+    [Space]
     [SerializeField] private int attackSwipeDamage = 20;
     [SerializeField] private float turnAndFaceSpeed = 5f;
     [SerializeField] private float turnAndFaceUpdateTime = 1f;
+
     [Header("Cast Attack Settings")]
+    [SerializeField] private bool enableCastAttack = true;
     [SerializeField] private float castAttackDistance = 2f;
     [SerializeField] private float castChargeTime = 2f;
     
@@ -18,12 +21,18 @@ public class PlantController : EnemyController
     [SerializeField] private GameObject castProjectile;
     [SerializeField] private Transform castPoint;
     [Header("Jump Attack Settings")]
+    [SerializeField] private bool enableJumpAttack = true;
     [SerializeField] private float jumpAttackDistanceMax = 5f;
     [SerializeField] private float jumpAttackDistanceMin = 3f;
     [SerializeField] private float jumpAttackSpeed = 5f;
     
     [SerializeField] private int jumpDamage = 30;
 
+    [Header("Movement Settings")]
+    [SerializeField] bool enablePlayerFollow = true;
+    [SerializeField] private float followSpeed = 2f;
+    [SerializeField] private float followUpdateRate = 2f;
+    [SerializeField] private float stopDistance = 2f;
     
     protected override void Start() {
         base.Start();
@@ -35,18 +44,25 @@ public class PlantController : EnemyController
         if(newState == EnemyState.Fight)
         {
             // Come alive
-            GetComponent<Animator>().SetTrigger("goAlive");
+            _anim.SetTrigger("goAlive");
 
             // if only just entered fight state, cooldown before attacking
             isCooledDown = false;
             StartCoroutine(Cooldown());
 
-            StartCoroutine(UpdateFacingDirection());
+            if (!enablePlayerFollow)
+                StartCoroutine(UpdateFacingDirection());
+            
+            if (enablePlayerFollow) {
+                GetComponent<NavMeshAgent>().stoppingDistance = jumpAttackDistanceMin;
+                StartCoroutine(UpdateTrackingPosition());
+                StartCoroutine(UpdateMovementFacingDirection());
+            }
         }
         else if(newState == EnemyState.Patrol)
         {
             // Die
-            GetComponent<Animator>().SetTrigger("goDead");
+            _anim.SetTrigger("goDead");
 
             StopCoroutine(UpdateFacingDirection());
         }
@@ -57,9 +73,62 @@ public class PlantController : EnemyController
         
         if (enemyState == EnemyState.Fight)
         {
-            // Update attack logic
-            CastAttackUpdateLogic();
-            JumpAttackUpdateLogic();
+            if (enableCastAttack)
+                CastAttackUpdateLogic();
+
+            if (enableJumpAttack)
+                JumpAttackUpdateLogic();
+
+            if (!GetComponent<NavMeshAgent>().isStopped && enablePlayerFollow)
+                _anim.SetFloat("locomotion", 1f);
+            
+            if (isAttacking)
+                _anim.SetFloat("locomotion", 0f);
+
+        }
+    }
+    IEnumerator UpdateTrackingPosition()
+    {
+        while (true)
+        {
+            float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
+
+            if (distanceToPlayer > stopDistance) {
+                GetComponent<NavMeshAgent>().isStopped = false;
+                GetComponent<NavMeshAgent>().SetDestination(playerPosition);
+            }
+            else {
+                GetComponent<NavMeshAgent>().isStopped = true;
+                StartCoroutine(UpdateMovementFacingDirection());
+            }
+            
+            yield return new WaitForSeconds(followUpdateRate);
+        }
+    }
+    IEnumerator UpdateMovementFacingDirection () {
+        Vector3 direction = (playerPosition - transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        // Check facing within 1 degree of player
+        while (Quaternion.Angle(transform.rotation, targetRotation) > 10f)
+        {   
+            yield return new WaitUntil(() => !isAttacking);
+
+            float angle = Quaternion.Angle(transform.rotation, targetRotation);
+            // map angle to 1 to 0, 1 being 180 degrees and 0 being 0 degrees
+            float animationSpeed = Mathf.Clamp01(angle / 90 + 0.2f);
+
+            // Update the direction to face the player
+            direction = (playerPosition - transform.position).normalized;
+            
+            // Calculate the rotation towards the player
+            targetRotation = Quaternion.LookRotation(direction);
+
+            // Smoothly rotate towards the target rotation over time
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnAndFaceSpeed);
+
+            // Wait for the next frame before continuing the loop
+            yield return null;
         }
     }
     IEnumerator UpdateFacingDirection()
@@ -80,7 +149,7 @@ public class PlantController : EnemyController
                 float animationSpeed = Mathf.Clamp01(angle / 90 + 0.2f);
                 // Slow tread backwards while turning
                 if (GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
-                    GetComponent<Animator>().SetFloat("locomotion", -animationSpeed);
+                    _anim.SetFloat("locomotion", -animationSpeed);
 
                 // Update the direction to face the player
                 direction = (playerPosition - transform.position).normalized;
@@ -94,12 +163,12 @@ public class PlantController : EnemyController
                 // Wait for the next frame before continuing the loop
                 yield return null;
             }
-            GetComponent<Animator>().SetFloat("locomotion", 0f);
+            _anim.SetFloat("locomotion", 0f);
 
             yield return new WaitForSeconds(turnAndFaceUpdateTime);
         }
     }
-    [SerializeField] bool canCastAttack = false;
+    bool canCastAttack = false;
     public void CastAttackUpdateLogic()
     {
         if(DistanceIgnoreY(transform.position, playerPosition) > castAttackDistance)
@@ -191,7 +260,7 @@ public class PlantController : EnemyController
         // Play swipe animation
         // randomly choose attack animation and trigger it
         int swipeAnimationIndex = Random.Range(1, 3);
-        GetComponent<Animator>().SetTrigger("attack" + swipeAnimationIndex);
+        _anim.SetTrigger("attack" + swipeAnimationIndex);
 
         switch (swipeAnimationIndex)
         {
@@ -217,12 +286,12 @@ public class PlantController : EnemyController
         isAttacking = false;
         StartCoroutine(Cooldown());
     }
-    [SerializeField] bool canJumpAttack = false;
+    bool canJumpAttack = false;
     private IEnumerator JumpAttack() {
         Debug.Log("Attack method: Jump Attack. Started");
 
         // Start jump animation
-        GetComponent<Animator>().SetTrigger("jump");
+        _anim.SetTrigger("jump");
         Vector3 targetPosition = playerPosition - transform.forward * (attackRange/2);
 
         while (DistanceIgnoreY(transform.position, targetPosition) > 0.5f)
@@ -233,7 +302,7 @@ public class PlantController : EnemyController
             yield return null;
         }
         Debug.Log("Jump attack landed");
-        GetComponent<Animator>().SetTrigger("attack1");
+        _anim.SetTrigger("attack1");
 
         // Apply damage to player
         ApplySwipeDamage(jumpDamage);
@@ -265,7 +334,7 @@ public class PlantController : EnemyController
         yield return new WaitForSeconds(castChargeTime);
 
         // Play cast animation
-        GetComponent<Animator>().SetTrigger("castEnd");
+        _anim.SetTrigger("castEnd");
 
         yield return new WaitForSeconds(0.55f);
 
@@ -295,15 +364,19 @@ public class PlantController : EnemyController
     
     }
     private void OnDrawGizmos() {
-        Gizmos.color = Color.red;
-        Vector3 offset = new Vector3(attackRangeOffset.x, attackRangeOffset.y, 0);
-        Gizmos.DrawWireSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
+        if (enableDefaultAttack) {
+            Gizmos.color = Color.red;
+            Vector3 offset = new Vector3(attackRangeOffset.x, attackRangeOffset.y, 0);
+            Gizmos.DrawWireSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
+        }
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _playerSightRange);
 
-        Gizmos.color = Color.green;
-        float jumpMidpoint = (jumpAttackDistanceMax + jumpAttackDistanceMin) / 2;
-        Gizmos.DrawWireSphere(transform.position+transform.forward*jumpMidpoint, jumpAttackDistanceMax-jumpMidpoint);
+        if (enableJumpAttack) {
+            Gizmos.color = Color.green;
+            float jumpMidpoint = (jumpAttackDistanceMax + jumpAttackDistanceMin) / 2;
+            Gizmos.DrawWireSphere(transform.position+transform.forward*jumpMidpoint, jumpAttackDistanceMax-jumpMidpoint);
+        }
     }
 }

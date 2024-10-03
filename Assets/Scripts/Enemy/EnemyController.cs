@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    protected Animator _anim;
+
     [HideInInspector]
     public Vector3 playerPosition; // Stores player input
     [SerializeField] private GameObject _player;
 
     // IDLE AND PATROLLING UNTIL PLAYER IS IN RANGE
     // then INTO FIGHT STATE
+    public float _playerSightRange = 10f; // Distance at which the enemy will see the player
 
     public event Action<EnemyState> onStateChanged; // Event that triggers when the enemy state changes
     private EnemyState _enemyState = EnemyState.Patrol; // Enemy is patrolling by default
@@ -36,15 +39,18 @@ public class EnemyController : MonoBehaviour
             onAnimationStateChange?.Invoke(value);
         }
     }
-
+    [Header("Default Attack Settings")]
+    [SerializeField] protected bool enableDefaultAttack = true;
 
     [Tooltip("The distance at which the enemy will attack the player.")]
     public float attackRange = 2f; // Distance at which the enemy will attack the player
     [Tooltip("For offsetting the attack sphere.")]
     public Vector2 attackRangeOffset = new Vector2(0, 0); // Offset for the attack range
     public float attackCooldown = 2f; // Time between attacks
-    public float _playerSightRange = 10f; // Distance at which the enemy will see the player
 
+    private void Awake() {
+        _anim = GetComponent<Animator>();
+    }
     protected virtual void Start()
     {
         // Find gamobject with name "Player"
@@ -73,12 +79,12 @@ public class EnemyController : MonoBehaviour
                 enemyState = EnemyState.Fight;
             }
         }
-        if (enemyState == EnemyState.Fight)
+        if (enemyState == EnemyState.Fight && enableDefaultAttack)
             DefaultAttackUpdateLogic();
     }
-    [SerializeField] protected bool isAttacking = false;
-    [SerializeField] protected bool isCooledDown = true;
-    [SerializeField] protected bool canDefaultAttack = false;
+    protected bool isAttacking = false;
+    protected bool isCooledDown = true;
+    protected bool canDefaultAttack = false;
     private void DefaultAttackUpdateLogic()
     {
         if(DistanceIgnoreY(transform.position, playerPosition) > attackRange)

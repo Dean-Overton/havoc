@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84469202498e54409ae324f879e1c504, type: 3}
   m_Name: Plant Monster Color Shifter
   m_EditorClassIdentifier: 
-  activeColorSetIndex: 0
+  activeColorSetIndex: 7
   activeColors: 49
   colorSets:
   - name: Green
@@ -11607,6 +11607,6 @@ MonoBehaviour:
     v0: 0
     v196: 0.76862746
     v96: 0.3764706
-  material: {fileID: 2100000, guid: c96f10cd9baab409682db8f63f20f4cf, type: 2}
+  material: {fileID: 2100000, guid: f7d1cce595a035e4e8cb7270770f1ba9, type: 2}
   exportPath: /Users/infinitypbr/Asset Store Projects - Low Poly - 2020 LTS/Assets/InfinityPBR/_InfinityPBR
     - Plant Monster/Textures & Materials
