@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1116325510985361430}
   - component: {fileID: 7406331345752047388}
   - component: {fileID: 4078093952894594634}
+  - component: {fileID: 8464090149113779465}
+  - component: {fileID: 1177818017894749656}
   m_Layer: 5
   m_Name: GameController
   m_TagString: Untagged
@@ -55,5 +57,57 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb5c0ac870792b44fafff745bdc49e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8464090149113779465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3904031706558331625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 074ad02f67d79d348a56767ae5953237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levels:
+  - waves:
+    - enemies:
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      spawnPoints:
+      - {fileID: 0}
+      - {fileID: 0}
+      enemiesRemaining: 0
+    - enemies:
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      spawnPoints:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      enemiesRemaining: 0
+  - waves:
+    - enemies:
+      - {fileID: 2645623825517917741, guid: ba9458c7d9315fb44b828e8f9be3f088, type: 3}
+      spawnPoints:
+      - {fileID: 0}
+      enemiesRemaining: 0
+--- !u!114 &1177818017894749656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3904031706558331625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3779dd340fdadda458ecded2250f0d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

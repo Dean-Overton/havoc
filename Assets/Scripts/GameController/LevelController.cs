@@ -24,7 +24,12 @@ public class LevelController : MonoBehaviour
     }
 
     public void EnemyKilled(int enemyID) {
+        if (currentLevel >= levels.Length) {
+            Debug.Log("All levels complete!");
+            return;
+        }
         Level _level = levels[currentLevel];
+
         Debug.Log("Enemy " + enemyID + " killed!");
         _level.waves[_level.getCurrentWave()].enemiesRemaining--;
 
