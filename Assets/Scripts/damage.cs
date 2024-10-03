@@ -5,7 +5,17 @@ using UnityEngine;
 public class damage : MonoBehaviour
 {
     public int bulletDamage = 2;
-    // Start is called before the first frame update
+    private float bulletSpeed = 20f;
+
+    void Update()
+    {
+        // Move the bullet forward
+        transform.position += transform.forward * bulletSpeed * Time.deltaTime;
+
+        if (transform.position.x > 50 || transform.position.z > 50) {
+            Destroy(gameObject);
+        }
+    }
     void OnCollisionEnter(Collision collision)
     {
         // Check if the object hit has a HealthComponent
@@ -16,8 +26,10 @@ public class damage : MonoBehaviour
         {
             // If the object has a HealthComponent, apply damage
             healthComponent.ReduceCurrentHealth(bulletDamage);
-            Debug.Log($"Applying {bulletDamage} damage to {collision.gameObject.name}");
         }
+
+        // Destroy the bullet
+        Destroy(gameObject);
 
     }
 }

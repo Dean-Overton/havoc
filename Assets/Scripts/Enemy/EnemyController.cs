@@ -13,7 +13,7 @@ public class EnemyController : MonoBehaviour
     public AnimationState animationState = AnimationState.Idle; // Enemy is idle
 
     public float attackRange = 2f; // Distance at which the enemy will attack the player
-    public float _playerSightRange = 10f; // Distance at which the enemy will see the player
+    public float _playerSightRange = 50f; // Distance at which the enemy will see the player
 
     private void Start()
     {
@@ -35,10 +35,10 @@ public class EnemyController : MonoBehaviour
             enemyState = EnemyState.Fight;
         }
     }
-    public void Attack()
-    {
-        // Attack the player
-    }
+    // public void Attack()
+    // {
+    //     // Attack the player
+    // }
 }
 [System.Serializable]
 public enum AnimationState
