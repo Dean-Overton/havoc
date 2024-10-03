@@ -8,7 +8,12 @@ public class Gun : MonoBehaviour
     public float bulletSpeed = 20f; // Speed at which the bullet will travel
     public float spawnOffset = 1f; // Distance to spawn the bullet ahead of the player
     private float nextFireTime;
+    private GameObject bin;
 
+    void Start()
+    {
+        bin = GameObject.Find("_BIN_");
+    }
     void Update()
     {
         if (Input.GetButton("Fire1") && Time.time >= nextFireTime) // Check if fire button is pressed and time allows firing
@@ -22,16 +27,18 @@ public class Gun : MonoBehaviour
     {
         // Calculate the spawn position ahead of the player
         Vector3 spawnPosition = bulletSpawnPoint.position + bulletSpawnPoint.forward * spawnOffset;
-
+        Vector3 spawnDirection = -bulletSpawnPoint.forward;
+        // Create the rotation that looks in the spawn direction
+        Quaternion spawnRotation = Quaternion.LookRotation(-spawnDirection, Vector3.up);
+        
         // Instantiate the bullet at the calculated spawn position with the correct rotation
-        GameObject bullet = Instantiate(bulletPrefab, spawnPosition, bulletSpawnPoint.rotation);
-
-        // Get the Rigidbody component of the bullet and set its velocity
-        Rigidbody rb = bullet.GetComponent<Rigidbody>();
-        if (rb != null)
+        GameObject bullet = Instantiate(bulletPrefab, spawnPosition, spawnRotation, bin.transform);
+        
+        // Optionally, set the speed of the bullet if needed
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        if (bulletScript != null)
         {
-            // The bullet should travel in the direction the bulletSpawnPoint is facing
-            rb.velocity = bulletSpawnPoint.forward * bulletSpeed;
+            bulletScript.speed = bulletSpeed;
         }
 
         // Optionally, if you have additional bullet setup like damage, you can handle it here
