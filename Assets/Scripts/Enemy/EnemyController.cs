@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour
         _player = GameObject.Find("Player");
         playerPosition = _player.transform.position;
     }
-    private void Update()
+    protected virtual void Update()
     {
         playerPosition = _player.transform.position;
         PlayerAttackLogic();
@@ -63,7 +63,7 @@ public class EnemyController : MonoBehaviour
         {
             if (enemyState == EnemyState.Patrol)
             {
-                Debug.Log(gameObject.name + " has seen the player and is in fight mode.");
+                Debug.Log(gameObject.name + " has seen the player and is now in fight mode.");
 
                 // Change the enemy state to fight
                 enemyState = EnemyState.Fight;
@@ -71,29 +71,30 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
-    protected bool isAttacking = false;
-    IEnumerator AttackUpdate()
+    [SerializeField]protected bool isAttacking = false;
+    [SerializeField]protected bool canAttack = true;
+    protected IEnumerator AttackUpdate()
     {
         while (enemyState == EnemyState.Fight)
         {
             // wait until the enemy is not attacking
-            yield return new WaitUntil(() => !isAttacking);
+            yield return new WaitUntil(() => !isAttacking && canAttack);
 
             // wait until the player is in range
             yield return new WaitUntil(() => Vector3.Distance(transform.position, playerPosition) < attackRange);
             
             // attack the player
             isAttacking = true;
-            Attack();
-
-            // wait until is finished attacking
-            yield return new WaitUntil(() => !isAttacking);
-
-            // wait for the attack cooldown
-            yield return new WaitForSeconds(attackCooldown);
+            DefaultAttack();
+            canAttack = false;
+        }
     }
+    protected IEnumerator Cooldown()
+    {
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
     }
-    public virtual void Attack()
+    public virtual void DefaultAttack()
     {
         // Attack the player
         Debug.LogError("The enemy is attacking the player. But the Attack() method is not implemented.");
