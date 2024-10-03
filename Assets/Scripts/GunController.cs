@@ -17,6 +17,7 @@ public class GunController : MonoBehaviour
     public Vector3 gunPosOffset = new Vector3(0.0058f, -0.0239f, 0.0169f); // Normal gun offset to get it in her hands
     public Quaternion gunPosRotation = Quaternion.Euler(0f, 108.9f, 90f);
     public Vector3 gunScale = new Vector3(1.2f, 1.2f, 1.2f);
+    private Coroutine despawnCoroutine;  // To keep track of the despawn coroutine
 
     void Start()
     {
@@ -35,14 +36,26 @@ public class GunController : MonoBehaviour
             }
             else if (currentGun != null && !isShootingCoroutineRunning)
             {
+                // If the player clicks again, restart the firing process
                 StartCoroutine(ShootingCoroutine());
+            }
+
+            // Cancel any despawn coroutine if we're firing again
+            if (despawnCoroutine != null)
+            {
+                StopCoroutine(despawnCoroutine);  // Stop any active despawn coroutine
+                isDespawningGun = false;  // Reset despawning flag
             }
         }
 
         // Stop shooting when the player releases right-click
         if (Input.GetMouseButtonUp(1) && isShootingCoroutineRunning)
         {
-            StartCoroutine(StopAndHoldGunCoroutine());
+            // Start the despawn coroutine when firing stops
+            if (!isDespawningGun)
+            {
+                despawnCoroutine = StartCoroutine(StopAndHoldGunCoroutine());
+            }
         }
     }
 
@@ -74,7 +87,6 @@ public class GunController : MonoBehaviour
         isShooting = true;
         animator.SetBool("isShooting", isShooting);
 
-
         GetComponent<CharacterFacing>().RotateTowardMouse = true;
 
         // Keep firing as long as right-click is held down
@@ -90,7 +102,10 @@ public class GunController : MonoBehaviour
         }
 
         // Once the player releases the button, hold the gun up for a few seconds before despawning
-        StartCoroutine(StopAndHoldGunCoroutine());
+        if (!isDespawningGun)
+        {
+            despawnCoroutine = StartCoroutine(StopAndHoldGunCoroutine());
+        }
     }
 
     private IEnumerator StopAndHoldGunCoroutine()

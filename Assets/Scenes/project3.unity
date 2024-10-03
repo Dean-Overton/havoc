@@ -1565,6 +1565,7 @@ MonoBehaviour:
   Camera: {fileID: 963194227}
   gravity: -9.81
   groundCheckDistance: 0.1
+  isMovingBackwards: 0
 --- !u!114 &466093390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4202,7 +4203,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.73, z: 1.49}
+  m_LocalPosition: {x: -0.79, y: 3.73, z: 1.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4221,9 +4222,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 466093392}
-  followSpeed: 4
-  offset: {x: 0, y: 5, z: -5}
-  panBackVector: {x: 10, y: 15, z: -15}
+  followSpeed: 2
+  initialOffset: {x: 0, y: 8, z: -9}
+  initialPanBackVector: {x: 0, y: 15, z: -19}
+  rotateSpeed: 200
   isDashing: 0
 --- !u!1001 &975502973
 PrefabInstance:
