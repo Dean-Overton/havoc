@@ -5,26 +5,43 @@ using UnityEngine;
 public class LevelController : MonoBehaviour
 {
     private int currentLevel = 0;
-    // private int currentWave = 0;
-    // public Wave[] waves;
     public Level[] levels;
     private GameObject enemiesParent;
+    private GameObject bridgesParent;
 
     public void BeginGame()
     {
         enemiesParent = GameObject.Find("_Enemies_");
+        bridgesParent = GameObject.Find("_Bridges_");
         SpawnWave();
+    }
+
+    public void StartNewLevel(int _levelID) {
+        if (_levelID == currentLevel) {
+            SpawnWave(); // INVOKE
+        } else {
+            Debug.Log("Level " + _levelID + " not yet unlocked!");
+        }
     }
 
     
     public void LevelComplete() {
         Debug.Log("Level " + currentLevel + " complete!");
         currentLevel++;
+
+        foreach (Transform bridge in bridgesParent.transform) {
+            if (bridge.gameObject.name == "Bridge" + currentLevel) {
+                bridge.gameObject.SetActive(true);
+            } else {
+                bridge.gameObject.SetActive(false);
+            }
+        }
+
         if (currentLevel >= levels.Length) {
             Debug.Log("All levels complete!");
             return;
         }
-        Invoke("SpawnWave", 5f);
+        // Invoke("SpawnWave", 5f);
     }
 
     public void EnemyKilled(int enemyID) {
@@ -46,7 +63,12 @@ public class LevelController : MonoBehaviour
 
     private void SpawnWave() {
         Level _level = levels[currentLevel];
-        // Debug.Log("Spawning wave " + _level.getCurrentWave());
+
+        if (_level.waves.Length <= 0) {
+            LevelComplete();
+            return;
+        }
+
         _level.waves[_level.getCurrentWave()].SetEnemiesRemaining(_level.waves[_level.getCurrentWave()].enemies.Length);
         for (int i = 0; i < _level.waves[_level.getCurrentWave()].enemies.Length; i++) {
             Instantiate(_level.waves[_level.getCurrentWave()].enemies[i], _level.waves[_level.getCurrentWave()].spawnPoints[i].position, _level.waves[_level.getCurrentWave()].spawnPoints[i].rotation, enemiesParent.transform);
@@ -60,6 +82,7 @@ public class LevelController : MonoBehaviour
         
     }
 }
+
 [System.Serializable]
 public class Wave {
     public GameObject[] enemies;
@@ -84,10 +107,4 @@ public class Level {
     public int getCurrentWave() {
         return this.currentWave;
     }
-
-    // public int levelNumber;
-    // public Level(int levelNumber, Wave[] waves) {
-    //     this.levelNumber = levelNumber;
-    //     this.waves = waves;
-    // }
 }

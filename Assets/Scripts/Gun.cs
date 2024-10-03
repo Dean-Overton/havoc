@@ -16,7 +16,7 @@ public class Gun : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetButton("Fire1") && Time.time >= nextFireTime) // Check if fire button is pressed and time allows firing
+        if (Input.GetButton("Fire2") && Time.time >= nextFireTime) // Check if fire button is pressed and time allows firing
         {
             Shoot();
             nextFireTime = Time.time + fireRate; // Update the next firing time

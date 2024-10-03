@@ -126,7 +126,7 @@ public class GunController : MonoBehaviour
     void FireGun()
     {
         // This method handles the firing logic, e.g., spawning bullets from the gun
-        Debug.Log("Firing the gun!");
+        // Debug.Log("Firing the gun!");
 
         // Add bullet instantiation logic here if necessary
         // Example:

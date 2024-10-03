@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour {
         levelController = gameObject.GetComponent<LevelController>();
 
         EventManager.OnCharacterDeath += CharacterDied;
+        EventManager.OnNewLevelEnter += NewLevelEntered;
 
         currentScene = SceneManager.GetActiveScene();
         if (currentScene.buildIndex == 1){
@@ -24,6 +25,11 @@ public class GameController : MonoBehaviour {
 
     void OnNewGame() {
         levelController.BeginGame();
+    }
+
+    void NewLevelEntered(int levelID) {
+        Debug.Log("New level entered: " + levelID);
+        levelController.StartNewLevel(levelID);
     }
 
     void CharacterDied(int characterID) {
@@ -41,6 +47,7 @@ public class GameController : MonoBehaviour {
     void OnDestroy() {
         // Unsubscribe from the event to prevent memory leaks
         EventManager.OnCharacterDeath -= CharacterDied;
+        EventManager.OnNewLevelEnter -= NewLevelEntered;
     }
 
 }
