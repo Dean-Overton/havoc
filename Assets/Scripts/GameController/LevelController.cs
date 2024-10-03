@@ -20,14 +20,14 @@ public class LevelController : MonoBehaviour
     public void LevelComplete() {
         Debug.Log("Level " + currentLevel + " complete!");
         currentLevel++;
-        Invoke("SpawnWave", 5f);
-    }
-
-    public void EnemyKilled(int enemyID) {
         if (currentLevel >= levels.Length) {
             Debug.Log("All levels complete!");
             return;
         }
+        Invoke("SpawnWave", 5f);
+    }
+
+    public void EnemyKilled(int enemyID) {
         Level _level = levels[currentLevel];
 
         Debug.Log("Enemy " + enemyID + " killed!");
