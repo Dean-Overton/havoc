@@ -20,6 +20,7 @@ public class LevelController : MonoBehaviour
     public void LevelComplete() {
         Debug.Log("Level " + currentLevel + " complete!");
         currentLevel++;
+        Invoke("SpawnWave", 5f);
     }
 
     public void EnemyKilled(int enemyID) {
@@ -28,9 +29,9 @@ public class LevelController : MonoBehaviour
         _level.waves[_level.getCurrentWave()].enemiesRemaining--;
 
         if (_level.waves[_level.getCurrentWave()].enemiesRemaining <= 0) {
+            Debug.Log("Wave " + _level.getCurrentWave() + " complete!");
             _level.IncrementWave();
             if (_level.getCurrentWave() < _level.waves.Length) {
-                Debug.Log("Wave " + _level.getCurrentWave() + " complete!");
                 SpawnWave();
             } else {
                 LevelComplete();
@@ -41,7 +42,7 @@ public class LevelController : MonoBehaviour
     private void SpawnWave() {
         Level _level = levels[currentLevel];
         // Debug.Log("Spawning wave " + _level.getCurrentWave());
-        _level.waves[_level.getCurrentWave()].SetEnemiesRemaining(_level.waves[0].enemies.Length);
+        _level.waves[_level.getCurrentWave()].SetEnemiesRemaining(_level.waves[_level.getCurrentWave()].enemies.Length);
         for (int i = 0; i < _level.waves[_level.getCurrentWave()].enemies.Length; i++) {
             Instantiate(_level.waves[_level.getCurrentWave()].enemies[i], _level.waves[_level.getCurrentWave()].spawnPoints[i].position, _level.waves[_level.getCurrentWave()].spawnPoints[i].rotation, enemiesParent.transform);
         }
