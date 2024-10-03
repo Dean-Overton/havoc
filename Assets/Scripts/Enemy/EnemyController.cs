@@ -45,11 +45,15 @@ public class EnemyController : MonoBehaviour
     public float attackCooldown = 2f; // Time between attacks
     public float _playerSightRange = 10f; // Distance at which the enemy will see the player
 
-    private void Start()
+    protected virtual void Start()
     {
         // Find gamobject with name "Player"
-        _player = GameObject.Find("Player");
         playerPosition = _player.transform.position;
+        enemyState = EnemyState.Patrol;
+
+        canDefaultAttack = false;
+        isAttacking = false;
+        isCooledDown = true;
     }
     protected virtual void Update()
     {
@@ -59,7 +63,7 @@ public class EnemyController : MonoBehaviour
     private void PlayerAttackLogic()
     {
         // Check if the player is within attack range
-        if (Vector3.Distance(transform.position, playerPosition) < _playerSightRange)
+        if (DistanceIgnoreY(transform.position, playerPosition) < _playerSightRange)
         {
             if (enemyState == EnemyState.Patrol)
             {
@@ -67,34 +71,31 @@ public class EnemyController : MonoBehaviour
 
                 // Change the enemy state to fight
                 enemyState = EnemyState.Fight;
-                StartCoroutine(AttackUpdate());
             }
         }
+        if (enemyState == EnemyState.Fight)
+            DefaultAttackUpdateLogic();
     }
-    [SerializeField]protected bool isAttacking = false;
-    [SerializeField]protected bool canAttack = true;
-    protected IEnumerator AttackUpdate()
+    [SerializeField] protected bool isAttacking = false;
+    [SerializeField] protected bool isCooledDown = true;
+    [SerializeField] protected bool canDefaultAttack = false;
+    private void DefaultAttackUpdateLogic()
     {
-        while (enemyState == EnemyState.Fight)
-        {
-            // wait until the enemy is not attacking
-            yield return new WaitUntil(() => !isAttacking && canAttack);
-
-            // wait until the player is in range
-            yield return new WaitUntil(() => Vector3.Distance(transform.position, playerPosition) < attackRange);
-            
-            // attack the player
-            isAttacking = true;
-            DefaultAttack();
-            canAttack = false;
+        if(DistanceIgnoreY(transform.position, playerPosition) > attackRange)
+        {   
+            canDefaultAttack = false;
+            return;
         }
+        
+        canDefaultAttack = true;
+        Attack();
     }
     protected IEnumerator Cooldown()
     {
         yield return new WaitForSeconds(attackCooldown);
-        canAttack = true;
+        isCooledDown = true;
     }
-    public virtual void DefaultAttack()
+    public virtual void Attack()
     {
         // Attack the player
         Debug.LogError("The enemy is attacking the player. But the Attack() method is not implemented.");
@@ -102,6 +103,15 @@ public class EnemyController : MonoBehaviour
     private void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _playerSightRange);
+    }
+
+    protected Vector2 flattenVector(Vector3 vector)
+    {
+        return new Vector2(vector.x, vector.z);
+    }
+    protected float DistanceIgnoreY(Vector3 a, Vector3 b)
+    {
+        return Vector3.Distance(flattenVector(a), flattenVector(b));
     }
 }
 [System.Serializable]

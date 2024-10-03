@@ -55,7 +55,7 @@ public class EnemyMovement : MonoBehaviour
             // Check for movement and set walk animation state
             _enemyController.animationState = AnimationState.Attack;
 
-            _enemyController.DefaultAttack();
+            _enemyController.Attack();
         }
         else
         {

@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,8 +15,15 @@ public class PlantController : EnemyController
     [SerializeField] private float castChargeTime = 2f;
     [SerializeField] private GameObject castProjectile;
     [SerializeField] private Transform castPoint;
+    [Header("Jump Attack Settings")]
+    [SerializeField] private float jumpAttackDistanceMax = 5f;
+    [SerializeField] private float jumpAttackDistanceMin = 3f;
+    [SerializeField] private float jumpAttackSpeed = 5f;
+
     
-    private void Start() {
+    protected override void Start() {
+        base.Start();
+
         onStateChanged += StateMonitor;
     }
     public void StateMonitor(EnemyState newState)
@@ -25,7 +34,7 @@ public class PlantController : EnemyController
             GetComponent<Animator>().SetTrigger("goAlive");
 
             // if only just entered fight state, cooldown before attacking
-            canAttack = false;
+            isCooledDown = false;
             StartCoroutine(Cooldown());
 
             StartCoroutine(UpdateFacingDirection());
@@ -41,8 +50,13 @@ public class PlantController : EnemyController
     protected override void Update()
     {
         base.Update();
-
-        CastAttackUpdateLogic();
+        
+        if (enemyState == EnemyState.Fight)
+        {
+            // Update attack logic
+            CastAttackUpdateLogic();
+            JumpAttackUpdateLogic();
+        }
     }
     IEnumerator UpdateFacingDirection()
     {
@@ -76,41 +90,94 @@ public class PlantController : EnemyController
                 // Wait for the next frame before continuing the loop
                 yield return null;
             }
-            Debug.Log("Now facing player");
             GetComponent<Animator>().SetFloat("locomotion", 0f);
 
             yield return new WaitForSeconds(turnAndFaceUpdateTime);
         }
     }
-    bool canCastAttack = false;
+    [SerializeField] bool canCastAttack = false;
     public void CastAttackUpdateLogic()
     {
-        if(Vector3.Distance(transform.position, playerPosition) < castAttackDistance)
+        if(DistanceIgnoreY(transform.position, playerPosition) > castAttackDistance)
         {
-            if(canAttack && enemyState == EnemyState.Fight)
-            {
-                canCastAttack = true;
-                DefaultAttack();
-            }
-        } else {
             canCastAttack = false;
+            return;
         }
+        canCastAttack = true;
+        Attack();
+    }
+    public void JumpAttackUpdateLogic()
+    {
+        if(DistanceIgnoreY(transform.position, playerPosition) > jumpAttackDistanceMax 
+        || DistanceIgnoreY(transform.position, playerPosition) < jumpAttackDistanceMin)
+        {
+            canJumpAttack = false;
+            return;
+        }
+
+        canJumpAttack = true;
+        Attack();
+    }
+    Dictionary<string, int> defaultAttackWeights = new Dictionary<string, int> {
+            {"Swipe", 60},
+            {"Cast", 15},
+            {"Jump", 35}
+        };
+    int GetAttackMethod () {
+        Dictionary<string, int> attackWeights = new Dictionary<string, int>(defaultAttackWeights);
+        if(!canDefaultAttack)
+        {
+            attackWeights["Swipe"] = 0;
+        }
+        if(!canCastAttack)
+        {
+            attackWeights["Cast"] = 0;
+        }
+        if (!canJumpAttack)
+        {
+            attackWeights["Jump"] = 0;
+        }
+        Debug.Log("Attack weights: " + string.Join(", ", attackWeights.Select(x => x.Key + ": " + x.Value).ToArray()));
+        int totalWeight = attackWeights.Values.Sum();
+        int randomWeight = Random.Range(0, totalWeight);
+        for (int i = 0; i < attackWeights.Count; i++)
+        {
+            randomWeight -= attackWeights.Values.ElementAt(i);
+            if (randomWeight <= 0 && attackWeights.Values.ElementAt(i) != 0)
+            {
+                Debug.Log("Selected attack method: " + attackWeights.Keys.ElementAt(i));
+                return i+1;
+            }
+        }
+
+        return 0;
     }
     // Trigger grow animation when player is near
-    public override void DefaultAttack()
-    {
+    public override void Attack()
+    {   
+        if(!isCooledDown || isAttacking) 
+            return;
+
         // Randomly choose an attack method
-        canAttack = false;
-        isAttacking = true;
-        
-        int attackMethod = Random.Range(1, canCastAttack ? 3 : 2);
-        switch (attackMethod)
+        switch (GetAttackMethod())
         {
             case 1:
+                isAttacking = true;
+                isCooledDown = false;
                 StartCoroutine(SwipeAttack());
                 break;
             case 2:
+                isAttacking = true;
+                isCooledDown = false;
                 StartCoroutine(CastAttack());
+                break;
+            case 3:
+                isAttacking = true;
+                isCooledDown = false;
+                StartCoroutine(JumpAttack());
+                break;
+            default:
+                Debug.Log("No attack method selected");
                 break;
         }
     }
@@ -146,6 +213,34 @@ public class PlantController : EnemyController
         isAttacking = false;
         StartCoroutine(Cooldown());
     }
+    [SerializeField] bool canJumpAttack = false;
+    private IEnumerator JumpAttack() {
+        Debug.Log("Attack method: Jump Attack. Started");
+
+        // Start jump animation
+        GetComponent<Animator>().SetTrigger("jump");
+        Vector3 targetPosition = playerPosition - transform.forward * (attackRange/2);
+
+        while (DistanceIgnoreY(transform.position, targetPosition) > 0.5f)
+        {
+            // Move towards the player
+            GetComponent<Rigidbody>().MovePosition(Vector3.MoveTowards(transform.position, targetPosition, jumpAttackSpeed * Time.deltaTime));
+            
+            yield return null;
+        }
+        Debug.Log("Jump attack landed");
+        GetComponent<Animator>().SetTrigger("attack1");
+
+        // Apply damage to player
+        ApplySwipeDamage();
+
+        // Wait for jump animation to finish
+        yield return new WaitForSeconds(0.6f);
+
+        isAttacking = false;
+        StartCoroutine(Cooldown());
+    }
+    
     private IEnumerator CastAttack() {
         Debug.Log("Attack method: Cast. Started");
         // Start cast animation
@@ -173,6 +268,7 @@ public class PlantController : EnemyController
         isAttacking = false;
         StartCoroutine(Cooldown());
     }
+    
     public void ApplySwipeDamage()
     {
         // do phyics collision in front of plant and check if player is hit
@@ -199,5 +295,9 @@ public class PlantController : EnemyController
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _playerSightRange);
+
+        Gizmos.color = Color.green;
+        float jumpMidpoint = (jumpAttackDistanceMax + jumpAttackDistanceMin) / 2;
+        Gizmos.DrawWireSphere(transform.position+transform.forward*jumpMidpoint, jumpAttackDistanceMax-jumpMidpoint);
     }
 }
