@@ -52,7 +52,7 @@ public class health_component : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth - increment, 0);
         if (currentHealth <= 0)
         {
-            OnPlayerDeath.Invoke();     // Sending a public event that the player has died
+            OnPlayerDeath?.Invoke();     // Sending a public event that the player has died
             Destroy(gameObject);        // Destroying the Player Body Object
         }
     }
@@ -96,7 +96,7 @@ public class health_component : MonoBehaviour
         // Destroy the object if health is 0 or below
         if (currentHealth <= 0)
         {
-            OnPlayerDeath.Invoke();     // Sending a public event that the player has died
+            OnPlayerDeath?.Invoke();     // Sending a public event that the player has died
             Destroy(gameObject);        // Destroying the Player Body Object
         }
     }

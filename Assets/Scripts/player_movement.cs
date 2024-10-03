@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TopDownCharacterMover : MonoBehaviour
@@ -39,7 +37,7 @@ public class TopDownCharacterMover : MonoBehaviour
         // Calculate the movement speed adjusted for frame time
         var speed = MovementSpeed * Time.deltaTime;
 
-        // Adjust the target vector based on the camera’s rotation
+        // Adjust the target vector based on the cameraï¿½s rotation
         targetVector = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0) * targetVector;
 
         // Calculate the new position based on the movement vector
