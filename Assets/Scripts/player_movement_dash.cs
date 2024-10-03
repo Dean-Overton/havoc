@@ -1,114 +1,125 @@
 using UnityEngine;
 
-public class Dashing : MonoBehaviour
+public class TeleportSlash : MonoBehaviour
 {
-    [Header("References")]
-    public Transform orientation;  // Character's orientation
-    private Rigidbody rb;
+    public float teleportDistance = 5f;    // Maximum distance of the teleport
+    public int damage = 10;                // Damage dealt to enemies
+    public LayerMask enemyLayer;           // LayerMask to identify enemies
+    public GameObject linePrefab;          // Prefab for the line renderer
 
-    [Header("Dashing")]
-    public float dashForce;
-    public float dashUpwardForce;
-    public float maxDashYSpeed;
-    public float dashDuration;
+    private CharacterController _characterController; // Reference to the CharacterController
 
-    [Header("Camera Effects")]
-    public camera_controller cam;
-    public float dashFov = 85f;
-
-    [Header("Settings")]
-    public bool allowAllDirections = true;
-    public bool disableGravity = false;
-    public bool resetVelocity = true;
-
-    [Header("Cooldown")]
-    public float dashCooldown;
-    private float dashCooldownTimer;
-
-    [Header("Input")]
-    public KeyCode dashKey = KeyCode.E;
-
-    private Vector3 delayedForceToApply;
-    private bool isDashing = false;
-
-    private void Start()
+    void Start()
     {
-        rb = GetComponent<Rigidbody>();
-    }
+        // Get the CharacterController component
+        _characterController = GetComponent<CharacterController>();
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0)
+        // Ensure the CharacterController exists
+        if (_characterController == null)
         {
-            Dash();
-        }
-
-        if (dashCooldownTimer > 0)
-        {
-            dashCooldownTimer -= Time.deltaTime;
+            Debug.LogError("CharacterController not found on " + gameObject.name);
         }
     }
 
-    private void Dash()
+    void Update()
     {
-        dashCooldownTimer = dashCooldown;
-        isDashing = true;
-
-        cam.DoFov(dashFov);
-
-        // Always dash in the direction the character is facing (orientation)
-        Vector3 direction = GetDirection(orientation);
-        delayedForceToApply = direction * dashForce + orientation.up * dashUpwardForce;
-
-        if (disableGravity)
+        // Check for the left mouse button press to trigger teleport
+        if (Input.GetMouseButtonDown(0))
         {
-            rb.useGravity = false;
-        }
+            Teleport();
 
-        if (resetVelocity)
-        {
-            rb.velocity = Vector3.zero;
-        }
+            // Trigger the camera dashing sequence or extend the dash duration
+            CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
-        Invoke(nameof(ApplyDashForce), 0.025f);
-        Invoke(nameof(ResetDash), dashDuration);
-    }
-
-    private void ApplyDashForce()
-    {
-        rb.AddForce(delayedForceToApply, ForceMode.Impulse);
-
-        // Limit vertical speed during dash if necessary
-        if (rb.velocity.y > maxDashYSpeed)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, maxDashYSpeed, rb.velocity.z);
+            if (cameraFollow.isDashing)
+            {
+                // If the camera is already in dashing mode, extend the hold time
+                cameraFollow.ExtendDash(2f); // Extend dash by 2 seconds
+            }
+            else
+            {
+                // Start a new dash sequence with 2 seconds duration
+                StartCoroutine(cameraFollow.DashingSequence(2f));
+            }
         }
     }
 
-    private void ResetDash()
+    void Teleport()
     {
-        isDashing = false;
-
-        cam.DoFov(85f);
-
-        if (disableGravity)
+        if (_characterController == null)
         {
-            rb.useGravity = true;
+            return; // If no CharacterController, exit early to avoid errors
         }
+
+        // Determine the teleport direction based on mouse position
+        Vector3 teleportDirection = GetMouseDirection();
+
+        // Perform a raycast to check for enemies in the teleport path
+        RaycastHit[] hits = Physics.RaycastAll(transform.position, teleportDirection, teleportDistance, enemyLayer);
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                // Deal damage to enemies within the teleport path
+                hit.collider.GetComponent<health_component>()?.ReduceCurrentHealth(damage);
+            }
+        }
+
+        // Calculate the teleport end position
+        Vector3 teleportEndPosition = transform.position + teleportDirection * teleportDistance;
+
+        // Check for obstacles in the teleport path using raycasting
+        RaycastHit teleportHit;
+        if (Physics.Raycast(transform.position, teleportDirection, out teleportHit, teleportDistance))
+        {
+            // If there's an obstacle, stop at the obstacle point
+            teleportEndPosition = teleportHit.point;
+        }
+
+        // Spawn the line at the start and end points to visualize the teleport
+        SpawnTeleportLine(transform.position, teleportEndPosition);
+
+        // Calculate the movement vector from current position to teleport end position
+        Vector3 moveDirection = teleportEndPosition - transform.position;
+
+        // Move the character using the CharacterController
+        _characterController.Move(moveDirection);
     }
 
-    private Vector3 GetDirection(Transform forwardTransform)
+    // Function to get the direction from the player to the mouse cursor in world space
+    Vector3 GetMouseDirection()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Cast a ray from the camera to the mouse position
 
-        Vector3 direction = forwardTransform.forward * verticalInput + forwardTransform.right * horizontalInput;
+        // Assume the player is on a flat plane (XZ plane)
+        Plane plane = new Plane(Vector3.up, transform.position);
+        float distanceToPlane;
 
-        if (!allowAllDirections || (horizontalInput == 0 && verticalInput == 0))
+        if (plane.Raycast(ray, out distanceToPlane))
         {
-            direction = forwardTransform.forward;
+            Vector3 targetPoint = ray.GetPoint(distanceToPlane); // Get the point on the plane where the ray hits
+            Vector3 direction = (targetPoint - transform.position).normalized; // Calculate the direction from the player to the mouse
+            return direction;
         }
 
-        return direction.normalized;
+        return transform.forward; // Fallback to forward if something goes wrong
+    }
+
+    void SpawnTeleportLine(Vector3 start, Vector3 end)
+    {
+        GameObject lineObject = Instantiate(linePrefab, start, Quaternion.identity);
+        LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
+
+        // Set the line's start and end positions
+        lineRenderer.SetPosition(0, start);
+        lineRenderer.SetPosition(1, end);
+
+        // Customize line appearance (width, color, etc.)
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+        lineRenderer.material.color = Color.cyan;  // Bright color for teleport
+
+        // Destroy the line after a short duration
+        Destroy(lineObject, 0.5f);
     }
 }

@@ -1,117 +1,115 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterFacing : MonoBehaviour
 {
     [SerializeField]
-    private bool RotateTowardMouse = true; // Whether the character should rotate towards the mouse position
-
-    [SerializeField]
-    private float RotationSpeed = 500f; // Speed at which the character rotates
-
-    [SerializeField]
-    private float LockOnDistance = 10f; // Maximum distance for lock-on
+    public bool RotateTowardMouse = true; // Whether the character should rotate towards the mouse position
 
     [SerializeField]
     private Camera Camera; // Reference to the camera used to calculate mouse position
 
-    private GameObject _lockedOnObject; // The currently locked-on object
+    [SerializeField]
+    private float maxArmAngle = 50f; // Maximum angle the arms can rotate
 
-    void Update()
+    [SerializeField]
+    private float ikFloats = 0.1f; // how much the arms want to aim 
+
+    private Animator animator;
+
+    void Start()
     {
-        if (_lockedOnObject != null)
+        animator = GetComponent<Animator>();
+
+        if (Camera == null)
         {
-            // Check if the mouse position is within lock-on distance of the locked-on object
-            if (IsMouseWithinLockOnDistance())
-            {
-                // Rotate towards the locked-on object
-                RotateTowardLockedOnObject();
-            }
-            else
-            {
-                // If out of range, stop locking on
-                _lockedOnObject = null;
-            }
+            Camera = Camera.main; // Assign the main camera if none is assigned
         }
-        else if (RotateTowardMouse)
-        {
-            // Rotate towards the mouse position
-            RotateFromMouseVector();
-            // Check if the mouse hits a valid lock-on target
-            CheckForLockOn();
-        }
+
     }
 
-    private void RotateFromMouseVector()
+    // OnAnimatorIK is used to dynamically position and rotate the hands using IK
+    void OnAnimatorIK(int layerIndex)
     {
-        // Create a ray from the camera to the mouse position
-        Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
-
-        // Check if the ray hits any object
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        if (RotateTowardMouse && animator)
         {
-            // Get the point where the ray hit the object
-            Vector3 target = hitInfo.point;
-            target.y = transform.position.y; // Keep the target on the same vertical level as the character
-
-            // Rotate the character to look at the target point
-            Vector3 directionToTarget = target - transform.position;
-            directionToTarget.y = 0; // Ensure rotation is only on the XZ plane
-            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-        }
-    }
-
-    private void RotateTowardLockedOnObject()
-    {
-        if (_lockedOnObject != null)
-        {
-            // Rotate towards the locked-on object
-            Vector3 directionToLockedOnObject = _lockedOnObject.transform.position - transform.position;
-            directionToLockedOnObject.y = 0; // Ensure rotation is only on the XZ plane
-            Quaternion rotation = Quaternion.LookRotation(directionToLockedOnObject);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, RotationSpeed * Time.deltaTime);
-        }
-    }
-
-    private bool IsMouseWithinLockOnDistance()
-    {
-        if (_lockedOnObject != null)
-        {
-            // Create a ray from the camera to the mouse position
+            // Cast a ray from the camera to the mouse position
+            InitialTurnAround();
             Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+            float characterY = transform.position.y; // Get the Y height of the character
 
-            // Check if the ray hits any object
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            // Calculate how far along the ray we need to go to reach the player's Y-plane
+            if (ray.direction.y != 0) // Prevent division by zero
             {
-                // Calculate the distance from the mouse position to the locked-on object
-                float distanceToLockedOnObject = Vector3.Distance(hitInfo.point, _lockedOnObject.transform.position);
+                // Calculate the distance along the ray to intersect with the character's Y plane
+                float distanceToYPlane = (characterY - ray.origin.y) / ray.direction.y;
 
-                // Check if this distance is within the lock-on range
-                return distanceToLockedOnObject <= LockOnDistance;
+                // Calculate the point where the ray intersects with the player's Y plane
+                Vector3 targetPoint = ray.origin + ray.direction * distanceToYPlane;
+
+                // Lock the target's Y position to match the character's Y level
+                targetPoint.y = characterY;
+
+                // Calculate the direction from the character to the target (XZ plane)
+                Vector3 directionToTarget = targetPoint - transform.position;
+                directionToTarget.y = 0; // Keep it on the XZ plane
+
+                // Calculate the angle between the character's forward direction and the direction to the target
+                float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
+
+                // If the angle exceeds the maximum allowed, clamp it
+                if (angleToTarget <= maxArmAngle)
+                {
+                    // Apply IK to both hands using ikFloats for weights
+                    animator.SetIKPositionWeight(AvatarIKGoal.RightHand, ikFloats);
+                    animator.SetIKRotationWeight(AvatarIKGoal.RightHand, ikFloats);
+                    animator.SetIKPosition(AvatarIKGoal.RightHand, targetPoint);
+                    animator.SetIKRotation(AvatarIKGoal.RightHand, Quaternion.LookRotation(directionToTarget));
+
+                    animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, ikFloats);
+                    animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, ikFloats);
+                    animator.SetIKPosition(AvatarIKGoal.LeftHand, targetPoint);
+                    animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.LookRotation(directionToTarget));
+                }
+                else
+                {
+                    // Clamp the arm rotation at the max angle
+                    Vector3 clampedDirection = Vector3.RotateTowards(transform.forward, directionToTarget, Mathf.Deg2Rad * maxArmAngle, 0f);
+
+                    // Apply IK to both hands but clamp the rotation to the max allowed angle
+                    Vector3 clampedTarget = transform.position + clampedDirection;
+                    clampedTarget.y = characterY; // Keep the Y position clamped to the character's Y level
+
+                    animator.SetIKPositionWeight(AvatarIKGoal.RightHand, ikFloats);
+                    animator.SetIKRotationWeight(AvatarIKGoal.RightHand, ikFloats);
+                    animator.SetIKPosition(AvatarIKGoal.RightHand, clampedTarget);
+                    animator.SetIKRotation(AvatarIKGoal.RightHand, Quaternion.LookRotation(clampedDirection));
+
+                    animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, ikFloats);
+                    animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, ikFloats);
+                    animator.SetIKPosition(AvatarIKGoal.LeftHand, clampedTarget);
+                    animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.LookRotation(clampedDirection));
+                }
             }
         }
-
-        // If raycast does not hit anything or locked-on object is null, consider it out of range
-        return false;
     }
-
-    private void CheckForLockOn()
+    private void InitialTurnAround()
     {
-        // Create a ray from the camera to the mouse position
+        // Cast a ray from the camera to the mouse position
         Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, transform.position); // Define a plane at the player's Y level
+        float rayDistance;
 
-        // Check if the ray hits any object
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        // If the ray hits the plane, we get the point where it hits
+        if (groundPlane.Raycast(ray, out rayDistance))
         {
-            // Check if the object has a "lock_on_able" tag or component
-            if (hitInfo.collider.CompareTag("LockOnAble")) // Make sure to set the correct tag or add a component check
-            {
-                // Set the locked-on object
-                _lockedOnObject = hitInfo.collider.gameObject;
-            }
+            Vector3 targetPoint = ray.GetPoint(rayDistance); // Get the point where the ray hits the plane
+
+            // Calculate the direction from the character to the target point
+            Vector3 directionToTarget = targetPoint - transform.position;
+            directionToTarget.y = 0; // Keep the rotation on the XZ plane
+
+            // Rotate the character to face the target point
+            transform.rotation = Quaternion.LookRotation(directionToTarget);
         }
     }
 }
