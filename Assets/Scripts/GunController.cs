@@ -19,10 +19,17 @@ public class GunController : MonoBehaviour
     public Vector3 gunScale = new Vector3(1.2f, 1.2f, 1.2f);
     private Coroutine despawnCoroutine;  // To keep track of the despawn coroutine
 
+    public GameObject bulletPrefab;
+    public Transform bulletSpawnPoint; // The point where bullets are spawned
+    public float bulletSpeed = 20f; // Speed at which the bullet will travel
+    public float spawnOffset = 1f; // Distance to spawn the bullet ahead of the player
+    private GameObject bin;
+
     void Start()
     {
         // Get the Animator component on the player object
         animator = GetComponent<Animator>();
+        bin = GameObject.Find("_BIN_");
     }
 
     void Update()
@@ -34,7 +41,7 @@ public class GunController : MonoBehaviour
             {
                 StartCoroutine(SpawnAndFireGunCoroutine());
             }
-            else if (currentGun != null && !isShootingCoroutineRunning)
+            else if (currentGun != null && isShootingCoroutineRunning)
             {
                 // If the player clicks again, restart the firing process
                 StartCoroutine(ShootingCoroutine());
@@ -92,10 +99,24 @@ public class GunController : MonoBehaviour
         // Keep firing as long as right-click is held down
         while (Input.GetMouseButton(1))
         {
-            if (Time.time > nextFireTime)
+            if (Time.time >= nextFireTime)
             {
+                // Calculate the spawn position ahead of the player
+                Vector3 spawnPosition = bulletSpawnPoint.position + bulletSpawnPoint.forward * spawnOffset;
+                Vector3 spawnDirection = -bulletSpawnPoint.forward;
+                // Create the rotation that looks in the spawn direction
+                Quaternion spawnRotation = Quaternion.LookRotation(-spawnDirection, Vector3.up);
+                
+                // Instantiate the bullet at the calculated spawn position with the correct rotation
+                GameObject bullet = Instantiate(bulletPrefab, spawnPosition, spawnRotation, bin.transform);
+                
+                // Optionally, set the speed of the bullet if needed
+                Bullet bulletScript = bullet.GetComponent<Bullet>();
+                if (bulletScript != null)
+                {
+                    bulletScript.speed = bulletSpeed;
+                }
                 nextFireTime = Time.time + fireRate;
-                FireGun();
             }
 
             yield return null; // Wait for the next frame
@@ -121,20 +142,6 @@ public class GunController : MonoBehaviour
         DespawnGun();
 
         isDespawningGun = false;
-    }
-
-    void FireGun()
-    {
-        // This method handles the firing logic, e.g., spawning bullets from the gun
-        // Debug.Log("Firing the gun!");
-
-        // Add bullet instantiation logic here if necessary
-        // Example:
-        /*
-        GameObject bullet = Instantiate(bulletPrefab, currentGun.transform.Find("Muzzle").position, currentGun.transform.Find("Muzzle").rotation);
-        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-        bulletRb.velocity = currentGun.transform.forward * bulletSpeed;
-        */
     }
 
     void StopShooting()
