@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Gun : MonoBehaviour
 {
@@ -9,17 +10,24 @@ public class Gun : MonoBehaviour
     public float spawnOffset = 1f; // Distance to spawn the bullet ahead of the player
     private float nextFireTime;
     private GameObject bin;
-
+    public int ammo = 20;
+    public int maxAmmo = 20;
+    //public UIDataHandler handler;
     void Start()
     {
         bin = GameObject.Find("_BIN_");
+        
     }
     void Update()
     {
         if (Input.GetButton("Fire2") && Time.time >= nextFireTime) // Check if fire button is pressed and time allows firing
         {
-            Shoot();
-            nextFireTime = Time.time + fireRate; // Update the next firing time
+            if (ammo > 0)
+            {
+                Shoot();
+
+                nextFireTime = Time.time + fireRate; // Update the next firing time
+            }
         }
     }
 
@@ -40,6 +48,7 @@ public class Gun : MonoBehaviour
         {
             bulletScript.speed = bulletSpeed;
         }
+        ammo--;
 
         // Optionally, if you have additional bullet setup like damage, you can handle it here
         // damage dm = bullet.GetComponent<damage>();
@@ -48,4 +57,9 @@ public class Gun : MonoBehaviour
         //     dm.bulletDamage = bulletDamage; // Ensure bulletDamage is defined in your script
         // }
     }
+    public void ReloadGun()
+    {
+        ammo = maxAmmo; 
+    }
+
 }

@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Runtime.CompilerServices;
 
 public class TeleportSlash : MonoBehaviour
 {
@@ -8,6 +10,11 @@ public class TeleportSlash : MonoBehaviour
     public GameObject linePrefab;          // Prefab for the line renderer
 
     private CharacterController _characterController; // Reference to the CharacterController
+
+    public int dashAmount = 5;                // Maximum number of dashes
+    public int currentDashAmount = 5;         // Current available dashes
+    public float dashCooldown = 1f;           // Time in seconds before a single dash is reloaded
+    private bool isReloadingDash = false;     // Flag to prevent multiple reload coroutines
 
     void Start()
     {
@@ -26,22 +33,61 @@ public class TeleportSlash : MonoBehaviour
         // Check for the left mouse button press to trigger teleport
         if (Input.GetMouseButtonDown(0))
         {
-            Teleport();
-
-            // Trigger the camera dashing sequence or extend the dash duration
-            CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
-
-            if (cameraFollow.isDashing)
+            // Check if the player has dashes available
+            if (currentDashAmount > 0)
             {
-                // If the camera is already in dashing mode, extend the hold time
-                cameraFollow.ExtendDash(2f); // Extend dash by 2 seconds
+                Teleport();
+
+                //reload the gun when you dash
+                Gun gun = GetComponent<Gun>();
+                gun.ReloadGun();
+
+                // Decrease the current dash count
+                currentDashAmount--;
+
+                // Start reloading dashes if not already doing so
+                if (!isReloadingDash)
+                {
+                    StartCoroutine(ReloadDashesCoroutine());
+                }
+
+                // Trigger the camera dashing sequence or extend the dash duration
+                CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
+
+                if (cameraFollow.isDashing)
+                {
+                    // If the camera is already in dashing mode, extend the hold time
+                    cameraFollow.ExtendDash(2f); // Extend dash by 2 seconds
+                }
+                else
+                {
+                    // Start a new dash sequence with 4 seconds duration
+                    StartCoroutine(cameraFollow.DashingSequence(3f));
+                }
             }
             else
             {
-                // Start a new dash sequence with 2 seconds duration
-                StartCoroutine(cameraFollow.DashingSequence(2f));
+                // Optionally, play a sound or show feedback indicating no dashes are available
+                Debug.Log("No dashes available!");
             }
         }
+    }
+
+    IEnumerator ReloadDashesCoroutine()
+    {
+        isReloadingDash = true;
+        while (currentDashAmount < dashAmount)
+        {
+            yield return new WaitForSeconds(dashCooldown);
+            ReloadDashes(1);
+        }
+        isReloadingDash = false;
+    }
+
+    void ReloadDashes(int amount)
+    {
+        currentDashAmount = Mathf.Min(currentDashAmount + amount, dashAmount);
+        // Optionally, update UI or give player feedback on dash reload
     }
 
     void Teleport()
