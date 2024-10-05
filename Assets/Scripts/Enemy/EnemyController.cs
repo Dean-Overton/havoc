@@ -1,27 +1,67 @@
+using System;
+using System.Collections;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    protected Animator _anim;
+
     [HideInInspector]
     public Vector3 playerPosition; // Stores player input
     [SerializeField] private GameObject _player;
 
     // IDLE AND PATROLLING UNTIL PLAYER IS IN RANGE
     // then INTO FIGHT STATE
+    public float _playerSightRange = 10f; // Distance at which the enemy will see the player
 
-    public EnemyState enemyState = EnemyState.Patrol; // Enemy is patrolling
-    public AnimationState animationState = AnimationState.Idle; // Enemy is idle
+    public event Action<EnemyState> onStateChanged; // Event that triggers when the enemy state changes
+    private EnemyState _enemyState = EnemyState.Patrol; // Enemy is patrolling by default
+    public EnemyState enemyState  {
+        get { return _enemyState; }
+        set
+        {
+            if (value != _enemyState) {
+                onStateChanged?.Invoke(value);
+            };
+            _enemyState = value;
+        }
+    }
 
+    public event Action<AnimationState> onAnimationStateChange; // Event that triggers when the animation state changes
+    private AnimationState _animationState = AnimationState.Idle; // Enemy is idle
+    public AnimationState animationState
+    {
+        get { return _animationState; }
+        set
+        {
+            _animationState = value;
+            onAnimationStateChange?.Invoke(value);
+        }
+    }
+    [Header("Default Attack Settings")]
+    [SerializeField] protected bool enableDefaultAttack = true;
+
+    [Tooltip("The distance at which the enemy will attack the player.")]
     public float attackRange = 2f; // Distance at which the enemy will attack the player
-    public float _playerSightRange = 50f; // Distance at which the enemy will see the player
+    [Tooltip("For offsetting the attack sphere.")]
+    public Vector2 attackRangeOffset = new Vector2(0, 0); // Offset for the attack range
+    public float attackCooldown = 2f; // Time between attacks
 
-    private void Start()
+    private void Awake() {
+        _anim = GetComponent<Animator>();
+    }
+    protected virtual void Start()
     {
         // Find gamobject with name "Player"
-        _player = GameObject.Find("Player");
         playerPosition = _player.transform.position;
+        enemyState = EnemyState.Patrol;
+
+        canDefaultAttack = false;
+        isAttacking = false;
+        isCooledDown = true;
     }
-    void Update()
+    protected virtual void Update()
     {
         playerPosition = _player.transform.position;
         PlayerAttackLogic();
@@ -29,25 +69,56 @@ public class EnemyController : MonoBehaviour
     private void PlayerAttackLogic()
     {
         // Check if the player is within attack range
-        if (Vector3.Distance(transform.position, playerPosition) < _playerSightRange)
+        if (DistanceIgnoreY(transform.position, playerPosition) < _playerSightRange)
         {
-            // Change the enemy state to fight
-            enemyState = EnemyState.Fight;
+            if (enemyState == EnemyState.Patrol)
+            {
+                Debug.Log(gameObject.name + " has seen the player and is now in fight mode.");
+
+                // Change the enemy state to fight
+                enemyState = EnemyState.Fight;
+            }
         }
+        if (enemyState == EnemyState.Fight && enableDefaultAttack)
+            DefaultAttackUpdateLogic();
     }
-    // public void Attack()
-    // {
-    //     // Attack the player
-    // }
-}
-[System.Serializable]
-public enum AnimationState
-{
-    Idle,
-    Walk,
-    Run,
-    Jump,
-    Attack,
+    protected bool isAttacking = false;
+    protected bool isCooledDown = true;
+    protected bool canDefaultAttack = false;
+    private void DefaultAttackUpdateLogic()
+    {
+        if(DistanceIgnoreY(transform.position, playerPosition) > attackRange)
+        {   
+            canDefaultAttack = false;
+            return;
+        }
+        
+        canDefaultAttack = true;
+        Attack();
+    }
+    protected IEnumerator Cooldown()
+    {
+        yield return new WaitForSeconds(attackCooldown);
+        isCooledDown = true;
+    }
+    public virtual void Attack()
+    {
+        // Attack the player
+        Debug.LogError("The enemy is attacking the player. But the Attack() method is not implemented.");
+    }
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _playerSightRange);
+    }
+
+    protected Vector2 flattenVector(Vector3 vector)
+    {
+        return new Vector2(vector.x, vector.z);
+    }
+    protected float DistanceIgnoreY(Vector3 a, Vector3 b)
+    {
+        return Vector3.Distance(flattenVector(a), flattenVector(b));
+    }
 }
 [System.Serializable]
 public enum EnemyState

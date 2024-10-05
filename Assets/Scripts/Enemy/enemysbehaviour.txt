@@ -1,0 +1,14 @@
+enemys
+
+shared behavior
+- attack every time between
+- wait till player is in range
+
+groot behaviour:
+- movement is more static and different
+- animation is different
+- types of attacks are different (magic energy orb)
+
+giant behaviour:
+- movement is walking and running
+- idle is walking between points
