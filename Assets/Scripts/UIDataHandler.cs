@@ -13,6 +13,7 @@ public class UIDataHandler : MonoBehaviour
     private TeleportSlash dash;
     private health_component healthComponent; 
     public int ammo;
+    public int maxAmmo;
     public int health;
     public int maxhealth;
     public int dashes;
@@ -34,6 +35,7 @@ public class UIDataHandler : MonoBehaviour
     {
 
         ammo = weaponData.ammo;
+        maxAmmo = weaponData.maxAmmo;
         health = healthComponent.getCurrentHealth();
         maxhealth = healthComponent.getMaxHealth();
         dashes = dash.currentDashAmount;
