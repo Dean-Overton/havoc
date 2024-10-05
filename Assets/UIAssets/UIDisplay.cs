@@ -9,7 +9,7 @@ public class UIDisplay : MonoBehaviour
     public int currentAmmo;
     public UIDataHandler UIDataHandler;
 
-    [Header("UI References")]
+    [Header("Ammo UI References")]
     public Transform ammoDisplayParent;    // Parent for ammo icons
     public Image bulletIconPrefab;
     private List<Image> bulletIcons = new List<Image>();
@@ -19,27 +19,49 @@ public class UIDisplay : MonoBehaviour
     public int currentHealth;
     public int maxHealth;
 
+    [Header("Dash Settings")]
+    public int maxDashes = 3;
+    public int currentDashes;
+
+    [Header("Dash UI References")]
+    public Transform dashIconsParent;    // Parent for dash icons
+    public Image dashIconPrefab;
+    private List<Image> dashIcons = new List<Image>();
 
     void Start()
     {
+        if (UIDataHandler == null)
+        {
+            Debug.LogError("UI - UIDataHandler is not assigned in UIDisplay.");
+            return;
+        }
+
+        // Initialize ammo
         currentAmmo = UIDataHandler.ammo;
+        ammoCapacity = UIDataHandler.maxAmmo;
+        InitializeAmmoDisplay();
+
+        // Initialize health
         currentHealth = UIDataHandler.health;
         maxHealth = UIDataHandler.maxhealth;
-        Debug.Log("Start with" + ammoCapacity);
-        //ammoCapacity = UIDataHandler.maxAmmo;
-        InitializeAmmoDisplay();
         UpdateHealthBar();
+
+        // Initialize dashes
+        currentDashes = UIDataHandler.dashes;   
+        maxDashes = UIDataHandler.maxDashes;    
+        InitializeDashDisplay();
     }
 
     void Update()
     {
         UpdateAmmoDisplay();
         UpdateHealthBar();
+        UpdateDashDisplay();
     }
 
     void InitializeAmmoDisplay()
     {
-        Debug.Log("init with" +  ammoCapacity);
+        Debug.Log("UI - init ammo with " + ammoCapacity);
         // Clear existing icons
         foreach (Transform child in ammoDisplayParent)
         {
@@ -54,7 +76,6 @@ public class UIDisplay : MonoBehaviour
             bulletIcon.transform.localScale = Vector3.one;
             bulletIcon.rectTransform.sizeDelta = new Vector2(9, 15);
             bulletIcons.Add(bulletIcon);
-            Debug.Log("drawing");
         }
     }
 
@@ -62,7 +83,12 @@ public class UIDisplay : MonoBehaviour
     {
         currentAmmo = UIDataHandler.ammo;
         ammoCapacity = UIDataHandler.maxAmmo;
-        
+
+        if (bulletIcons.Count != ammoCapacity)
+        {
+            InitializeAmmoDisplay();
+        }
+
         for (int i = 0; i < bulletIcons.Count; i++)
         {
             if (i < currentAmmo)
@@ -78,6 +104,52 @@ public class UIDisplay : MonoBehaviour
         }
     }
 
+    void InitializeDashDisplay()
+    {
+        Debug.Log("UI - init dashes with " + maxDashes);
+        // Clear existing icons
+        foreach (Transform child in dashIconsParent)
+        {
+            Destroy(child.gameObject);
+        }
+        dashIcons.Clear();
+
+        // Instantiate dash icons under the dashIconsParent
+        for (int i = 0; i < maxDashes; i++)
+        {
+            Image dashIcon = Instantiate(dashIconPrefab, dashIconsParent);
+            dashIcon.transform.localScale = Vector3.one;
+            // Adjust size if necessary
+            // dashIcon.rectTransform.sizeDelta = new Vector2(width, height); // Set appropriate size
+            dashIcons.Add(dashIcon);
+        }
+    }
+
+    void UpdateDashDisplay()
+    {
+        currentDashes = UIDataHandler.dashes;   
+        maxDashes = UIDataHandler.maxDashes;    
+
+        if (dashIcons.Count != maxDashes)
+        {
+            InitializeDashDisplay();
+        }
+
+        for (int i = 0; i < dashIcons.Count; i++)
+        {
+            if (i < currentDashes)
+            {
+                // Set dash icon to fully visible
+                dashIcons[i].color = new Color(1f, 1f, 1f, 1f);
+            }
+            else
+            {
+                // Set dash icon to dimmed or transparent
+                dashIcons[i].color = new Color(1f, 1f, 1f, 0.4f);
+            }
+        }
+    }
+
     void UpdateHealthBar()
     {
         currentHealth = UIDataHandler.health;
@@ -87,7 +159,13 @@ public class UIDisplay : MonoBehaviour
 
         // Update the fill amount of the health bar image
         HealthBarGradient gradientControlHP = healthBarFillImage.GetComponent<HealthBarGradient>();
-        gradientControlHP.SetHealth(healthPercentage);
-
+        if (gradientControlHP != null)
+        {
+            gradientControlHP.SetHealth(healthPercentage);
+        }
+        else
+        {
+            Debug.LogError("HealthBarGradient component not found on healthBarFillImage.");
+        }
     }
 }

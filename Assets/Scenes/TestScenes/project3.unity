@@ -685,14 +685,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 192309181}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.856024, y: 6.2233944, z: 12.100248}
+  m_LocalRotation: {x: -0, y: -0.05268093, z: 0, w: 0.99861145}
+  m_LocalPosition: {x: 4.315202, y: 4.423394, z: -17.442541}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1854883681}
   - {fileID: 57054329}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1316394407}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &203434055 stripped
 GameObject:
@@ -1562,6 +1562,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1113727682}
+    - targetCorrespondingSourceObject: {fileID: 4675244881689331884, guid: 4ebd0ab8fbc5109429e49661c0bb72bd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 192309182}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8555317206674094783, guid: 4ebd0ab8fbc5109429e49661c0bb72bd,
         type: 3}
@@ -9758,6 +9762,7 @@ RectTransform:
   - {fileID: 1646764326}
   - {fileID: 1997088625}
   - {fileID: 798287595}
+  - {fileID: 1979568432}
   m_Father: {fileID: 192309182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -9849,6 +9854,11 @@ MonoBehaviour:
   healthBarFillImage: {fileID: 798287597}
   currentHealth: 0
   maxHealth: 0
+  maxDashes: 3
+  currentDashes: 0
+  dashIconsParent: {fileID: 1979568432}
+  dashIconPrefab: {fileID: 445848277783206787, guid: 5ee3c851073bcd146b128175a6d6af38,
+    type: 3}
 --- !u!1001 &1859583785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10607,6 +10617,68 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1970535741}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1979568431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1979568432}
+  - component: {fileID: 1979568433}
+  m_Layer: 0
+  m_Name: DashIcons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1979568432
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979568431}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1854883681}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -35, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1979568433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979568431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 1
 --- !u!1 &1995906345 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1600809451893531828, guid: 0604ce9b58da7114aa77bfa1ef820aea,
@@ -11643,5 +11715,4 @@ SceneRoots:
   - {fileID: 2095291765}
   - {fileID: 2140169087}
   - {fileID: 448737382}
-  - {fileID: 192309182}
   - {fileID: 1517606154}
