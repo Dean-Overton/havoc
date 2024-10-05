@@ -11,15 +11,17 @@ public class health_component : MonoBehaviour
     [SerializeField] bool passiveRegen = false;
     [SerializeField] int passiveRegenHealthPerSecond = 1;
 
+    private int characterID;
+
     private float regenTimer = 0f; // Timer to track when to regenerate health
     [SerializeField] float regenInterval = 1f; // Time interval for health regeneration (in seconds)
 
-    // the logic to handle when the player is killed to broadcast it to the game controller
-    // public delegate void CharacterDied(int characterID);
-    // public event CharacterDied OnCharacterDeath;
-
-    void Start()
-    {
+    void Awake() {
+        if (isPlayer) {
+            characterID = 1;
+        } else {
+            characterID = 2;
+        }
         currentHealth = maxHealth;
     }
 
@@ -72,12 +74,16 @@ public class health_component : MonoBehaviour
 
         // Destroy the object if health is 0 or below
         if (currentHealth <= 0) {
-            if (isPlayer) {
-                EventManager.BroadcastCharacterDeath(1);        // Broadcast the player death event
-            } else { // Update for when we have multiple enemies
-                EventManager.BroadcastCharacterDeath(2);        // Broadcast the enemy death event
-            }
-            Destroy(gameObject);
+            DIE();
         }
+
+        if (gameObject.GetComponent<Transform>().position.y < -10) {
+            DIE();
+        }
+    }
+
+    public void DIE() {
+        EventManager.BroadcastCharacterDeath(characterID);        // Broadcast the character death event
+        Destroy(gameObject);
     }
 }
