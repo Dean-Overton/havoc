@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Runtime.CompilerServices;
 
 public class TeleportSlash : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class TeleportSlash : MonoBehaviour
     public GameObject linePrefab;          // Prefab for the line renderer
 
     private CharacterController _characterController; // Reference to the CharacterController
+    private Collider _collider;                       // Reference to the collider for disabling during teleport
 
     public int dashAmount = 5;                // Maximum number of dashes
     public int currentDashAmount = 5;         // Current available dashes
@@ -20,11 +20,16 @@ public class TeleportSlash : MonoBehaviour
     {
         // Get the CharacterController component
         _characterController = GetComponent<CharacterController>();
+        _collider = GetComponent<Collider>();
 
-        // Ensure the CharacterController exists
+        // Ensure components exist
         if (_characterController == null)
         {
             Debug.LogError("CharacterController not found on " + gameObject.name);
+        }
+        if (_collider == null)
+        {
+            Debug.LogError("Collider not found on " + gameObject.name);
         }
     }
 
@@ -36,11 +41,14 @@ public class TeleportSlash : MonoBehaviour
             // Check if the player has dashes available
             if (currentDashAmount > 0)
             {
-                Teleport();
+                StartCoroutine(Teleport());
 
-                //reload the gun when you dash
+                // Reload the gun when you dash
                 Gun gun = GetComponent<Gun>();
-                gun.ReloadGun();
+                if (gun != null)
+                {
+                    gun.ReloadGun();
+                }
 
                 // Decrease the current dash count
                 currentDashAmount--;
@@ -54,12 +62,12 @@ public class TeleportSlash : MonoBehaviour
                 // Trigger the camera dashing sequence or extend the dash duration
                 CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
-                if (cameraFollow.isDashing)
+                if (cameraFollow != null && cameraFollow.isDashing)
                 {
                     // If the camera is already in dashing mode, extend the hold time
                     cameraFollow.ExtendDash(2f); // Extend dash by 2 seconds
                 }
-                else
+                else if (cameraFollow != null)
                 {
                     // Start a new dash sequence with 4 seconds duration
                     StartCoroutine(cameraFollow.DashingSequence(3f));
@@ -67,7 +75,6 @@ public class TeleportSlash : MonoBehaviour
             }
             else
             {
-                // Optionally, play a sound or show feedback indicating no dashes are available
                 Debug.Log("No dashes available!");
             }
         }
@@ -87,55 +94,60 @@ public class TeleportSlash : MonoBehaviour
     void ReloadDashes(int amount)
     {
         currentDashAmount = Mathf.Min(currentDashAmount + amount, dashAmount);
-        // Optionally, update UI or give player feedback on dash reload
     }
 
-    void Teleport()
+    IEnumerator Teleport()
     {
-        if (_characterController == null)
+        if (_characterController == null || _collider == null)
         {
-            return; // If no CharacterController, exit early to avoid errors
+            yield break; // If necessary components are missing, exit early
         }
 
-        // Determine the teleport direction based on mouse position
         Vector3 teleportDirection = GetMouseDirection();
 
-        // Perform a raycast to check for enemies in the teleport path
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, teleportDirection, teleportDistance, enemyLayer);
+        // Calculate the intended teleport position
+        Vector3 targetPosition = transform.position + teleportDirection * teleportDistance;
+
+        // Disable collision temporarily for a smooth teleport
+        _collider.enabled = false;
+
+        // Draw the ray for debugging purposes (shows the teleport direction in the Scene view)
+        Debug.DrawRay(transform.position, teleportDirection * teleportDistance, Color.red, 2f); // Draws for 2 seconds
+
+        // Define a radius for the sphere cast to make the detection area larger
+        float sphereRadius = 1.0f;
+
+        // Perform a sphere cast to deal damage to any enemies in the teleport path
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, sphereRadius, teleportDirection, teleportDistance, enemyLayer);
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Enemy"))
+            health_component enemyHealth = hit.collider.GetComponent<health_component>();
+            if (enemyHealth != null)
             {
-                // Deal damage to enemies within the teleport path
-                hit.collider.GetComponent<health_component>()?.ReduceCurrentHealth(damage);
+                enemyHealth.ReduceCurrentHealth(damage);
+                Debug.Log("Dealt " + damage + " damage to " + hit.collider.gameObject.name);
             }
         }
 
-        // Calculate the teleport end position
-        Vector3 teleportEndPosition = transform.position + teleportDirection * teleportDistance;
-
-        // Check for obstacles in the teleport path using raycasting
-        RaycastHit teleportHit;
-        if (Physics.Raycast(transform.position, teleportDirection, out teleportHit, teleportDistance))
-        {
-            // If there's an obstacle, stop at the obstacle point
-            teleportEndPosition = teleportHit.point;
-        }
+        // Move the character instantly to the target position
+        transform.position = targetPosition;
 
         // Spawn the line at the start and end points to visualize the teleport
-        SpawnTeleportLine(transform.position, teleportEndPosition);
+        SpawnTeleportLine(transform.position - teleportDirection * teleportDistance, transform.position);
 
-        // Calculate the movement vector from current position to teleport end position
-        Vector3 moveDirection = teleportEndPosition - transform.position;
+        // Wait for the frame to complete to ensure the teleport is finished
+        yield return null;
 
-        // Move the character using the CharacterController
-        _characterController.Move(moveDirection);
+        // Re-enable collision after teleportation
+        _collider.enabled = true;
+
+        Debug.Log("Teleported to: " + targetPosition);
     }
 
     // Function to get the direction from the player to the mouse cursor in world space
     Vector3 GetMouseDirection()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Cast a ray from the camera to the mouse position
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // Assume the player is on a flat plane (XZ plane)
         Plane plane = new Plane(Vector3.up, transform.position);
@@ -143,8 +155,8 @@ public class TeleportSlash : MonoBehaviour
 
         if (plane.Raycast(ray, out distanceToPlane))
         {
-            Vector3 targetPoint = ray.GetPoint(distanceToPlane); // Get the point on the plane where the ray hits
-            Vector3 direction = (targetPoint - transform.position).normalized; // Calculate the direction from the player to the mouse
+            Vector3 targetPoint = ray.GetPoint(distanceToPlane);
+            Vector3 direction = (targetPoint - transform.position).normalized;
             return direction;
         }
 
@@ -156,16 +168,49 @@ public class TeleportSlash : MonoBehaviour
         GameObject lineObject = Instantiate(linePrefab, start, Quaternion.identity);
         LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
 
-        // Set the line's start and end positions
-        lineRenderer.SetPosition(0, start);
-        lineRenderer.SetPosition(1, end);
+        if (lineRenderer != null)
+        {
+            lineRenderer.SetPosition(0, start);
+            lineRenderer.SetPosition(1, end);
 
-        // Customize line appearance (width, color, etc.)
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
-        lineRenderer.material.color = Color.cyan;  // Bright color for teleport
+            // Customize line appearance (width, color, etc.)
+            lineRenderer.startWidth = 0.1f;
+            lineRenderer.endWidth = 0.1f;
+            lineRenderer.material.color = Color.cyan;
 
-        // Destroy the line after a short duration
-        Destroy(lineObject, 0.5f);
+            // Destroy the line after a short duration
+            Destroy(lineObject, 0.5f);
+        }
+        else
+        {
+            Debug.LogWarning("LineRenderer component not found on linePrefab.");
+        }
+    }
+    void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+
+        // Define the starting point of the sphere cast and the teleport direction
+        Vector3 startPoint = transform.position;
+        Vector3 teleportDirection = GetMouseDirection();
+
+        // Define the radius of the sphere cast
+        float sphereRadius = 1.0f;
+
+        // Set the color for the gizmos
+        Gizmos.color = Color.yellow;
+
+        // Draw the starting point of the sphere cast
+        Gizmos.DrawWireSphere(startPoint, sphereRadius);
+
+        // Draw spheres along the path to visualize the entire sphere cast path
+        int segments = 10; // Number of segments to visualize along the path
+        float segmentLength = teleportDistance / segments;
+
+        for (int i = 0; i <= segments; i++)
+        {
+            Vector3 segmentPosition = startPoint + teleportDirection * segmentLength * i;
+            Gizmos.DrawWireSphere(segmentPosition, sphereRadius);
+        }
     }
 }

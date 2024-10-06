@@ -4,15 +4,17 @@ using System.Collections.Generic;
 
 public class UIDisplay : MonoBehaviour
 {
+    public UIDataHandler UIDataHandler;
     [Header("Ammo Settings")]
     public int ammoCapacity = 20;
     public int currentAmmo;
-    public UIDataHandler UIDataHandler;
+
 
     [Header("Ammo UI References")]
     public Transform ammoDisplayParent;    // Parent for ammo icons
     public Image bulletIconPrefab;
     private List<Image> bulletIcons = new List<Image>();
+    public Image EmptyIcon;
 
     [Header("Health Bar Settings")]
     public Image healthBarFillImage;       // Reference to the health bar fill image
@@ -83,6 +85,7 @@ public class UIDisplay : MonoBehaviour
     {
         currentAmmo = UIDataHandler.ammo;
         ammoCapacity = UIDataHandler.maxAmmo;
+        Color EmptyImageColor = EmptyIcon.color;
 
         if (bulletIcons.Count != ammoCapacity)
         {
@@ -91,6 +94,7 @@ public class UIDisplay : MonoBehaviour
 
         for (int i = 0; i < bulletIcons.Count; i++)
         {
+
             if (i < currentAmmo)
             {
                 // Set bullet icon to fully visible red
@@ -102,6 +106,10 @@ public class UIDisplay : MonoBehaviour
                 bulletIcons[i].color = new Color(1f, 0f, 0f, 0.4f);
             }
         }
+        Color emptyImageColor = EmptyIcon.color;
+        emptyImageColor.a = (currentAmmo == 0) ? 1f : 0f; // Alpha should be between 0 and 1
+        EmptyIcon.color = emptyImageColor; // Apply the updated color back to the EmptyIcon
+
     }
 
     void InitializeDashDisplay()

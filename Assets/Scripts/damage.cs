@@ -24,8 +24,14 @@ public class damage : MonoBehaviour
 
         if (healthComponent != null)
         {
-            // If the object has a HealthComponent, apply damage
-            healthComponent.ReduceCurrentHealth(bulletDamage);
+            if (healthComponent.getCurrentHealth() - bulletDamage <= 0)
+            {
+                healthComponent.SetCurrentHealth(1);
+            }
+            else
+            {
+                healthComponent.ReduceCurrentHealth(bulletDamage);
+            }
         }
 
         // Destroy the bullet

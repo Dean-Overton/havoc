@@ -29,7 +29,12 @@ public class health_component : MonoBehaviour
         // Ensure current health does not exceed the new max health
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
     }
-
+    public void SetCurrentHealth(int amount)
+    {
+        currentHealth = amount;
+        // Ensure current health does not exceed the new max health
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    }
     public void AddCurrentHealth(int increment)
     {
         currentHealth = Mathf.Clamp(currentHealth + increment, 0, maxHealth); // Ensure health is within valid range
@@ -39,6 +44,7 @@ public class health_component : MonoBehaviour
     {
         currentHealth = Mathf.Max(currentHealth - increment, 0);
     }
+
 
     public void regenerateHealth()
     {
