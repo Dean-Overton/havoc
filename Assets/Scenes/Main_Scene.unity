@@ -550,6 +550,7 @@ Transform:
   - {fileID: 1760966627}
   - {fileID: 378435781}
   - {fileID: 663131114}
+  - {fileID: 703524744}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &71045006
@@ -7681,7 +7682,6 @@ Transform:
   - {fileID: 1831196303}
   - {fileID: 853469907}
   - {fileID: 2138695662}
-  - {fileID: 1724846837}
   - {fileID: 367345503}
   - {fileID: 28781402}
   - {fileID: 93179271}
@@ -7735,7 +7735,6 @@ Transform:
   - {fileID: 201754072}
   - {fileID: 486513652}
   - {fileID: 1333165120}
-  - {fileID: 867061862}
   - {fileID: 1913733481}
   - {fileID: 924721942}
   - {fileID: 719435038}
@@ -8312,6 +8311,39 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 698170053}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &703524743
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 703524744}
+  m_Layer: 0
+  m_Name: _Removable_Barriers_
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &703524744
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703524743}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1724846837}
+  - {fileID: 867061862}
+  m_Father: {fileID: 70607297}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &704057808 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4669043964528356, guid: f7bc96c880456e44da466b0acc89696a,
@@ -10641,7 +10673,7 @@ GameObject:
   - component: {fileID: 867061864}
   - component: {fileID: 867061863}
   m_Layer: 7
-  m_Name: removethisonnextlevel
+  m_Name: barrier2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10657,10 +10689,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.98988146, z: -0, w: 0.14189692}
   m_LocalPosition: {x: -2.86, y: 1.76, z: 56.46}
-  m_LocalScale: {x: 4.0769496, y: 2.8084047, z: 1}
+  m_LocalScale: {x: 4.07695, y: 2.8084047, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 663131114}
+  m_Father: {fileID: 703524744}
   m_LocalEulerAnglesHint: {x: 0, y: -556.315, z: 0}
 --- !u!65 &867061863
 BoxCollider:
@@ -20596,7 +20628,7 @@ GameObject:
   - component: {fileID: 1724846839}
   - component: {fileID: 1724846838}
   m_Layer: 7
-  m_Name: removethisonnextlevel2
+  m_Name: barrier3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20612,10 +20644,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000000989027, y: 0.012791485, z: 0.00000003365135, w: -0.9999182}
   m_LocalPosition: {x: -41.52, y: 0.65, z: 155.51}
-  m_LocalScale: {x: 5.3150644, y: 3.9755163, z: 1}
+  m_LocalScale: {x: 5.315065, y: 3.9755163, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 663131114}
+  m_Father: {fileID: 703524744}
   m_LocalEulerAnglesHint: {x: 0, y: -1081.466, z: 0}
 --- !u!65 &1724846838
 BoxCollider:
