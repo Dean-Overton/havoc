@@ -8,11 +8,12 @@ public class LevelController : MonoBehaviour
     public Level[] levels;
     private GameObject enemiesParent;
     private GameObject bridgesParent;
-
+    private GameObject BarriersParent; // for the barriers where the bridge entry spawns
     public void BeginGame()
     {
         enemiesParent = GameObject.Find("_Enemies_");
         bridgesParent = GameObject.Find("_Bridges_");
+        BarriersParent = GameObject.Find("_Removable_Barriers_");
         SpawnWave();
     }
 
@@ -36,7 +37,17 @@ public class LevelController : MonoBehaviour
                 bridge.gameObject.SetActive(false);
             }
         }
-
+        foreach (Transform barrier in BarriersParent.transform)
+        {
+            if (barrier.gameObject.name == "barrier" + currentLevel)
+            {
+                barrier.gameObject.SetActive(false);
+            }
+            else
+            {
+                barrier.gameObject.SetActive(true);
+            }
+        }
         if (currentLevel >= levels.Length) {
             Debug.Log("All levels complete!");
             return;

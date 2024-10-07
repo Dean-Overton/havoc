@@ -20,20 +20,13 @@ public class damage : MonoBehaviour
         transform.position += transform.forward * bulletSpeed * Time.deltaTime;
     }
 
-    void OnCollisionEnter(Collision collision)
+    // Use OnTriggerEnter instead of OnCollisionEnter
+    void OnTriggerEnter(Collider other)
     {
-        // Check if the collided object is on the Barrier layer
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Barrier"))
-        {
-            //Debug.Log("I HIT A BARRIOER");
-            // Ignore collision with barrier objects
-            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
-            return; // Exit the method to avoid further processing
-        }
-
         // Check if the object hit has a health_component
-        health_component healthComponent = collision.gameObject.GetComponent<health_component>();
+        health_component healthComponent = other.gameObject.GetComponent<health_component>();
 
+        // Only process objects with a health_component
         if (healthComponent != null)
         {
             // Ensure the health component belongs to a non-player entity
@@ -48,9 +41,9 @@ public class damage : MonoBehaviour
                     healthComponent.ReduceCurrentHealth(bulletDamage);
                 }
             }
-        }
 
-        // Destroy the bullet after collision
-        Destroy(gameObject);
+            // Destroy the bullet after processing damage
+            Destroy(gameObject);
+        }
     }
 }
