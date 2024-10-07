@@ -6,6 +6,7 @@ public class TeleportSlash : MonoBehaviour
     public float teleportDistance = 5f;    // Maximum distance of the teleport
     public int damage = 10;                // Damage dealt to enemies
     public LayerMask enemyLayer;           // LayerMask to identify enemies
+    public LayerMask barrierLayer;         // LayerMask to identify barriers
     public GameObject linePrefab;          // Prefab for the line renderer
 
     private CharacterController _characterController; // Reference to the CharacterController
@@ -108,6 +109,15 @@ public class TeleportSlash : MonoBehaviour
         // Calculate the intended teleport position
         Vector3 targetPosition = transform.position + teleportDirection * teleportDistance;
 
+        // Check for barriers in the path using a raycast
+        RaycastHit barrierHit;
+        if (Physics.Raycast(transform.position, teleportDirection, out barrierHit, teleportDistance, barrierLayer))
+        {
+            // If a barrier is hit, set the target position to the hit point
+            targetPosition = barrierHit.point;
+            Debug.Log("Hit barrier: " + barrierHit.collider.gameObject.name);
+        }
+
         // Disable collision temporarily for a smooth teleport
         _collider.enabled = false;
 
@@ -186,6 +196,7 @@ public class TeleportSlash : MonoBehaviour
             Debug.LogWarning("LineRenderer component not found on linePrefab.");
         }
     }
+
     void OnDrawGizmos()
     {
         if (!Application.isPlaying) return;

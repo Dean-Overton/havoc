@@ -149,3 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletDamage: 50
+  bulletLifetime: 2
+  barrierLayer:
+    serializedVersion: 2
+    m_Bits: 128

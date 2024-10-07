@@ -6,36 +6,51 @@ public class damage : MonoBehaviour
 {
     public int bulletDamage = 2;
     private float bulletSpeed = 20f;
+    public int bulletLifetime = 2;
+
+    void Start()
+    {
+        // Automatically destroy the bullet after 'bulletLifetime' seconds
+        Destroy(gameObject, bulletLifetime);
+    }
 
     void Update()
     {
         // Move the bullet forward
         transform.position += transform.forward * bulletSpeed * Time.deltaTime;
-
-        if (transform.position.x > 50 || transform.position.z > 50) {
-            Destroy(gameObject);
-        }
     }
+
     void OnCollisionEnter(Collision collision)
     {
-        // Check if the object hit has a HealthComponent
-        //Debug.Log($"Applying {bulletDamage} damage beforre searching for component ");
+        // Check if the collided object is on the Barrier layer
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Barrier"))
+        {
+            //Debug.Log("I HIT A BARRIOER");
+            // Ignore collision with barrier objects
+            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+            return; // Exit the method to avoid further processing
+        }
+
+        // Check if the object hit has a health_component
         health_component healthComponent = collision.gameObject.GetComponent<health_component>();
 
         if (healthComponent != null)
         {
-            if (healthComponent.getCurrentHealth() - bulletDamage <= 0)
+            // Ensure the health component belongs to a non-player entity
+            if (!healthComponent.isPlayer)
             {
-                healthComponent.SetCurrentHealth(1);
-            }
-            else
-            {
-                healthComponent.ReduceCurrentHealth(bulletDamage);
+                if (healthComponent.getCurrentHealth() - bulletDamage <= 0)
+                {
+                    healthComponent.SetCurrentHealth(1);
+                }
+                else
+                {
+                    healthComponent.ReduceCurrentHealth(bulletDamage);
+                }
             }
         }
 
-        // Destroy the bullet
+        // Destroy the bullet after collision
         Destroy(gameObject);
-
     }
 }

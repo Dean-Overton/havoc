@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class health_component : MonoBehaviour
 {
-    [SerializeField] bool isPlayer = false;
+    [SerializeField] public bool isPlayer = false;
     [SerializeField] int currentHealth = 100;
     [SerializeField] int maxHealth = 100;
     [SerializeField] bool passiveRegen = false;
