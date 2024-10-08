@@ -54,6 +54,7 @@ public class EnemyController : MonoBehaviour
     protected virtual void Start()
     {
         // Find gamobject with name "Player"
+        _player = GameObject.Find("Player");
         playerPosition = _player.transform.position;
         enemyState = EnemyState.Patrol;
 

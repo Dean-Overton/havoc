@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class health_component : MonoBehaviour
 {
-    [SerializeField] bool isPlayer = false;
+    [SerializeField] public bool isPlayer = false;
     [SerializeField] int currentHealth = 100;
     [SerializeField] int maxHealth = 100;
     [SerializeField] bool passiveRegen = false;
@@ -34,7 +34,12 @@ public class health_component : MonoBehaviour
         // Ensure current health does not exceed the new max health
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
     }
-
+    public void SetCurrentHealth(int amount)
+    {
+        currentHealth = amount;
+        // Ensure current health does not exceed the new max health
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    }
     public void AddCurrentHealth(int increment)
     {
         currentHealth = Mathf.Clamp(currentHealth + increment, 0, maxHealth); // Ensure health is within valid range
@@ -47,6 +52,7 @@ public class health_component : MonoBehaviour
         // Play the reduce damage sound
         AudioManager.instance.Play(reduceDamageSoundName);
     }
+
 
     public void regenerateHealth()
     {

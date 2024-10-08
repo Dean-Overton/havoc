@@ -9,6 +9,7 @@ public class LevelController : MonoBehaviour
     private Level[] initialLevels;
     private GameObject enemiesParent;
     private GameObject bridgesParent;
+    private GameObject BarriersParent;
 
     void Start()
     {
@@ -19,17 +20,21 @@ public class LevelController : MonoBehaviour
     {
         enemiesParent = GameObject.Find("_Enemies_");
         bridgesParent = GameObject.Find("_Bridges_");
+        BarriersParent = GameObject.Find("_Removable_Barriers_");
 
-    if (enemiesParent == null)
-    {
-        Debug.LogError("Enemies parent object not found!");
-    }
+        if (enemiesParent == null)
+        {
+            Debug.LogError("Enemies parent object not found!");
+        }
 
-    if (bridgesParent == null)
-    {
-        Debug.LogError("Bridges parent object not found!");
-    }
-
+        if (bridgesParent == null)
+        {
+            Debug.LogError("Bridges parent object not found!");
+        }
+        if (BarriersParent == null)
+        {
+            Debug.LogError("Barriers parent object not found!");
+        }
     }
     public void BeginGame()
     {
@@ -58,7 +63,17 @@ public class LevelController : MonoBehaviour
                 bridge.gameObject.SetActive(false);
             }
         }
-
+        foreach (Transform barrier in BarriersParent.transform)
+        {
+            if (barrier.gameObject.name == "barrier" + currentLevel)
+            {
+                barrier.gameObject.SetActive(false);
+            }
+            else
+            {
+                barrier.gameObject.SetActive(true);
+            }
+        }
         if (currentLevel >= levels.Length) {
             Debug.Log("All levels complete!");
             return;
