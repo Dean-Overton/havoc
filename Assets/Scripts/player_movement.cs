@@ -1,5 +1,8 @@
 using UnityEngine;
 
+[RequireComponent (typeof(CharacterController))]
+[RequireComponent (typeof(Animator))]
+[RequireComponent (typeof(PlayerMovementAudio))]
 public class TopDownCharacterMover : MonoBehaviour
 {
     [SerializeField]
@@ -18,9 +21,6 @@ public class TopDownCharacterMover : MonoBehaviour
 
     private Animator animator;
     public bool isMovingBackwards;
-
-
-    //TODO
 
     void Start()
     {
@@ -57,6 +57,12 @@ public class TopDownCharacterMover : MonoBehaviour
         // You can check if the character is moving backwards or forwards based on localInput.z
         bool isMovingBackwards = localInput.z < 0;
         animator.SetBool("isRunningBackwards", isMovingBackwards);
+
+        if (_isGrounded && localInput != Vector3.zero)
+        {
+            // Play the movement audio
+            GetComponent<PlayerMovementAudio>().PlayFootstepSound();
+        }
     }
 
     private void GroundCheck()

@@ -23,6 +23,8 @@ public class GunController : MonoBehaviour
     public Transform bulletSpawnPoint; // The point where bullets are spawned
     public float bulletSpeed = 20f; // Speed at which the bullet will travel
     public float spawnOffset = 1f; // Distance to spawn the bullet ahead of the player
+
+    [SerializeField] private string bulletSoundName = "LaserShot";
     private GameObject bin;
 
     void Start()
@@ -116,6 +118,11 @@ public class GunController : MonoBehaviour
                 {
                     bulletScript.speed = bulletSpeed;
                 }
+
+                // Play the shooting sound
+                AudioManager.instance.Play(bulletSoundName);
+                Debug.Log("Playing sound: " + bulletSoundName);
+
                 nextFireTime = Time.time + fireRate;
             }
 
