@@ -37,5 +37,6 @@ public class Bullet : MonoBehaviour
                 Debug.Log("i got here2");
             }
         }
+        Destroy(gameObject);
     }
 }

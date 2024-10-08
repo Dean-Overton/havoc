@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour {
 
         currentScene = SceneManager.GetActiveScene();
         if (currentScene.buildIndex == 1){
-            OnNewGame();
+            Invoke("OnNewGame", 1f);
         }
     }
 
@@ -35,12 +35,23 @@ public class GameController : MonoBehaviour {
     void CharacterDied(int characterID) {
         if (characterID == 1) {
             Debug.Log("Player has died!");
-            // Reload the scene
-            SceneManager.LoadScene(1);
+            StartCoroutine(OnPlayerDeath());
         } else if (characterID >= 2) {
-            // Debug.Log("Enemy has died!");
-            // Level controller wave[currentWave].enemiesRemaining--;
            levelController.EnemyKilled(characterID);
+        }
+        // Add more logic for different enemies
+    }
+
+    private IEnumerator OnPlayerDeath() {
+        // Reload the scene
+        SceneManager.LoadScene(1);
+        Destroy(this.gameObject);
+        yield return new WaitForSeconds(1f);
+    }
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Application.Quit();
         }
     }
 

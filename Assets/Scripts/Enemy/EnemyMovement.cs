@@ -166,12 +166,13 @@ public class EnemyMovement : MonoBehaviour
         if (angle > 0)
         {
             // Rotate right
-            GetComponent<EnemyAnimationController>().TurnRight();
+            _enemyController.animationState = AnimationState.TurnRight;
         }
         else if (angle < 0)
         {
             // Rotate left
-            GetComponent<EnemyAnimationController>().TurnLeft();
+            _enemyController.animationState = AnimationState.TurnLeft;
         }
     }
+    
 }
