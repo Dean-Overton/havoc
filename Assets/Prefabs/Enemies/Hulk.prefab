@@ -2248,6 +2248,8 @@ MonoBehaviour:
   attackRange: 2
   attackRangeOffset: {x: 0, y: 1}
   attackCooldown: 3
+  isAttacking: 0
+  isCooledDown: 1
   turnAndFaceSpeed: 5
   followUpdateRate: 1
   attackOffsetMuliplier: 0.8
@@ -2315,7 +2317,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!1 &8986709461307594359
 GameObject:
   m_ObjectHideFlags: 0

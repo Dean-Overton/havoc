@@ -81,11 +81,16 @@ public class HulkController : EnemyController
 
         // Set the attacking state to false
         isAttacking = false;
+
+        // Cooldown before attacking again
+        StartCoroutine(Cooldown());
     }
     IEnumerator UpdateTrackingPosition()
     {
         while (true)
         {
+            yield return new WaitUntil(() => !isAttacking);
+
             float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
 
             if (distanceToPlayer > attackRange*attackOffsetMuliplier) {

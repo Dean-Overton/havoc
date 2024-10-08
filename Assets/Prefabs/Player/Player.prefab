@@ -197,6 +197,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5585771742664602148}
+    - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 4bee1e23e7ac54547863c5b3708b707e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8418570235478507466}
     - targetCorrespondingSourceObject: {fileID: 4720875245130896613, guid: 4bee1e23e7ac54547863c5b3708b707e,
         type: 3}
       insertIndex: -1
@@ -271,9 +275,15 @@ MonoBehaviour:
   damage: 10
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+  barrierLayer:
+    serializedVersion: 2
+    m_Bits: 128
   linePrefab: {fileID: 169580774226687169, guid: e701a5ce6275cd8459cfd3c09b808e13,
     type: 3}
+  dashAmount: 5
+  currentDashAmount: 5
+  dashCooldown: 1
 --- !u!143 &5929393303052763864
 CharacterController:
   m_ObjectHideFlags: 0
@@ -322,11 +332,12 @@ MonoBehaviour:
   gunPosOffset: {x: 0.0058, y: -0.0239, z: 0.0169}
   gunPosRotation: {x: 0.5753081, y: 0.5753081, z: 0.41112116, w: 0.41112116}
   gunScale: {x: 1.2, y: 1.2, z: 1.2}
-  bulletPrefab: {fileID: 57860765119014210, guid: 5ca1bbf4fe02d6844a1e28b28a5ce38e,
+  bulletPrefab: {fileID: 57860765119014210, guid: 6e9aefcd889ef914b9f1ee6999612b32,
     type: 3}
   bulletSpawnPoint: {fileID: 3589258156897873676}
   bulletSpeed: 20
   spawnOffset: 1
+  bulletSoundName: LaserShot
 --- !u!114 &5585771742664602148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,6 +356,23 @@ MonoBehaviour:
   passiveRegen: 1
   passiveRegenHealthPerSecond: 1
   regenInterval: 1
+  reduceDamageSoundName: MeatPunchSound
+  deathSoundName: DeathSound
+--- !u!114 &8418570235478507466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598559946749106126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca00dca1dc0351e4b926769aedab020d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footstepSoundName: 'Footstep '
+  footstepSoundDelay: 0.5
+  isPlayingFootstepSound: 0
 --- !u!1 &1355860109784369169 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7619973582455523030, guid: 4bee1e23e7ac54547863c5b3708b707e,
