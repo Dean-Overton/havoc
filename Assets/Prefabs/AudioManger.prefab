@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1374756037101915910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9054425774556395056}
+  - component: {fileID: 3665496799077395465}
+  m_Layer: 0
+  m_Name: AudioManger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9054425774556395056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374756037101915910}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.5, y: 1.68, z: -15.77}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3665496799077395465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374756037101915910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b77f55a1139acb4ca6e29bde3f66f11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: MainMenuMusic
+    audioSound: {fileID: 8300000, guid: 01383e5e0e9d2f846940ff7e2ac6eae6, type: 3}
+    volume: 1
+    loop: 1
+    playOnAwake: 0
+    mixerGroup: {fileID: 24300002, guid: b5f472f5e8a607d438ee4704dd5084ac, type: 2}
+    source: {fileID: 0}
+  - name: MainThemeMedium1
+    audioSound: {fileID: 8300000, guid: 251e29c21c13aa741a4d1b9b58c15a70, type: 3}
+    volume: 0.7
+    loop: 1
+    playOnAwake: 0
+    mixerGroup: {fileID: 24300002, guid: b5f472f5e8a607d438ee4704dd5084ac, type: 2}
+    source: {fileID: 0}
+  - name: MainThemeMedium2
+    audioSound: {fileID: 8300000, guid: 7c5d6b0c34059914b89fa5dce7b592ff, type: 3}
+    volume: 0.7
+    loop: 1
+    playOnAwake: 0
+    mixerGroup: {fileID: 24300002, guid: 11343f55a26d04846bae0820786ce63f, type: 2}
+    source: {fileID: 0}
+  - name: BridgeRopeSway
+    audioSound: {fileID: 8300000, guid: 9f12f4690313ae7488f1ec96c4428e72, type: 3}
+    volume: 0.5
+    loop: 0
+    playOnAwake: 0
+    mixerGroup: {fileID: 24300002, guid: 11343f55a26d04846bae0820786ce63f, type: 2}
+    source: {fileID: 0}
+  - name: FootStepGrass
+    audioSound: {fileID: 8300000, guid: 1963d5f9ae63b6a408d4131ef708fe88, type: 3}
+    volume: 0.7
+    loop: 0
+    playOnAwake: 0
+    mixerGroup: {fileID: 24300002, guid: 11343f55a26d04846bae0820786ce63f, type: 2}
+    source: {fileID: 0}

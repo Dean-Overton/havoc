@@ -12,8 +12,11 @@ GameObject:
   - component: {fileID: 7406331345752047388}
   - component: {fileID: 4078093952894594634}
   - component: {fileID: 1177818017894749656}
-  - component: {fileID: 4169797723501104530}
+<<<<<<< HEAD
   - component: {fileID: 8586358843646695695}
+=======
+  - component: {fileID: 4169797723501104530}
+>>>>>>> main
   m_Layer: 5
   m_Name: GameController
   m_TagString: Untagged
@@ -72,7 +75,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3779dd340fdadda458ecded2250f0d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
+--- !u!114 &8586358843646695695
+=======
 --- !u!114 &4169797723501104530
+>>>>>>> main
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -81,6 +88,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 3904031706558331625}
   m_Enabled: 1
   m_EditorHideFlags: 0
+<<<<<<< HEAD
+  m_Script: {fileID: 11500000, guid: 1d93fe1a359a20c4f836b245472c5e81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicLoops:
+  - songAudioName: MainMenuMusic
+    songDelay: 1
+    songLoopCount: 1
+    musicType: 0
+  - songAudioName: MainThemeMedium1
+    songDelay: 5
+    songLoopCount: 1
+    musicType: 1
+  - songAudioName: MainThemeMedium2
+    songDelay: 5
+    songLoopCount: 2
+    musicType: 1
+=======
   m_Script: {fileID: 11500000, guid: 074ad02f67d79d348a56767ae5953237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -241,28 +266,4 @@ MonoBehaviour:
       - {fileID: 0}
       - {fileID: 0}
       enemiesRemaining: 0
---- !u!114 &8586358843646695695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3904031706558331625}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d93fe1a359a20c4f836b245472c5e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  musicLoops:
-  - songAudioName: MainMenuMusic
-    songDelay: 1
-    songLoopCount: 1
-    musicType: 0
-  - songAudioName: MainThemeMedium1
-    songDelay: 5
-    songLoopCount: 1
-    musicType: 1
-  - songAudioName: MainThemeMedium2
-    songDelay: 5
-    songLoopCount: 2
-    musicType: 1
+>>>>>>> main

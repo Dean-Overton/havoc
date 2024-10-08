@@ -16,6 +16,9 @@ public class health_component : MonoBehaviour
     private float regenTimer = 0f; // Timer to track when to regenerate health
     [SerializeField] float regenInterval = 1f; // Time interval for health regeneration (in seconds)
 
+    [SerializeField] string reduceDamageSoundName = "MeatPunchSound";
+    [SerializeField] string deathSoundName = "DeathSound";
+
     void Awake() {
         if (isPlayer) {
             characterID = 1;
@@ -45,6 +48,9 @@ public class health_component : MonoBehaviour
     public void ReduceCurrentHealth(int increment)
     {
         currentHealth = Mathf.Max(currentHealth - increment, 0);
+
+        // Play the reduce damage sound
+        AudioManager.instance.Play(reduceDamageSoundName);
     }
 
 
@@ -89,6 +95,9 @@ public class health_component : MonoBehaviour
     }
 
     public void DIE() {
+        // Play the death sound
+        AudioManager.instance.Play(deathSoundName);
+        
         EventManager.BroadcastCharacterDeath(characterID);        // Broadcast the character death event
         Destroy(gameObject);
     }
