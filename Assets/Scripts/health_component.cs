@@ -11,7 +11,7 @@ public class health_component : MonoBehaviour
     [SerializeField] bool passiveRegen = false;
     [SerializeField] int passiveRegenHealthPerSecond = 1;
 
-    private int characterID;
+    [SerializeField] private int characterID = 2;
 
     private float regenTimer = 0f; // Timer to track when to regenerate health
     [SerializeField] float regenInterval = 1f; // Time interval for health regeneration (in seconds)
@@ -22,8 +22,6 @@ public class health_component : MonoBehaviour
     void Awake() {
         if (isPlayer) {
             characterID = 1;
-        } else {
-            characterID = 2;
         }
         currentHealth = maxHealth;
     }
