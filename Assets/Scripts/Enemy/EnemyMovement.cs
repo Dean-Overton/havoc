@@ -71,6 +71,12 @@ public class EnemyMovement : MonoBehaviour
     }
     void PatrolMovement()
     {
+        if (_patrolWaypoints.Count == 0)
+        {
+            Debug.LogWarning("No patrol waypoints set for " + gameObject.name);
+            return;
+        }
+
         // Move towards the next waypoint
         Vector3 targetPosition = new Vector3(_patrolWaypoints[_currentWaypoint].position.x, transform.position.y, _patrolWaypoints[_currentWaypoint].position.z);
 

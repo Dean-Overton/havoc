@@ -9,14 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7148019938251842453}
-  - component: {fileID: 1109368639322252409}
+  - component: {fileID: 1023240873994175364}
   - component: {fileID: 2519737624597987908}
   - component: {fileID: 6646939205788204335}
   - component: {fileID: 86994943562475696}
   - component: {fileID: 2090757128604269581}
   - component: {fileID: 6018371156948611078}
   m_Layer: 0
-  m_Name: PumpkinHulk
+  m_Name: OldPumpkinHulk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,7 +39,7 @@ Transform:
   - {fileID: 3055588454596005122}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1109368639322252409
+--- !u!114 &1023240873994175364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2645623825517917741}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2f9885a89d835c448b74d59e34c762a, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a5427a8e9d58cd419680ffaa958fe13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerPosition: {x: 0, y: 0, z: 0}
@@ -76,6 +76,8 @@ MonoBehaviour:
   passiveRegen: 1
   passiveRegenHealthPerSecond: 1
   regenInterval: 1
+  reduceDamageSoundName: MeatPunchSound
+  deathSoundName: DeathSound
 --- !u!114 &6646939205788204335
 MonoBehaviour:
   m_ObjectHideFlags: 0

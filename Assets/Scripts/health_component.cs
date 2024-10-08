@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System;
 using UnityEngine;
 
 public class health_component : MonoBehaviour
@@ -87,12 +85,13 @@ public class health_component : MonoBehaviour
             DIE();
         }
     }
-
+    public event Action onDeath;
     public void DIE() {
         // Play the death sound
         AudioManager.instance.Play(deathSoundName);
         
         EventManager.BroadcastCharacterDeath(characterID);        // Broadcast the character death event
-        Destroy(gameObject);
+        
+        onDeath?.Invoke(); // Invoke the onDeath event
     }
 }
