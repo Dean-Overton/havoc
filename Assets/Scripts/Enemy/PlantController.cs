@@ -38,6 +38,7 @@ public class PlantController : EnemyController
         base.Start();
 
         onStateChanged += StateMonitor;
+        GetComponent<health_component>().onDeath += OnDeath;
     }
     public void StateMonitor(EnemyState newState)
     {
@@ -66,6 +67,20 @@ public class PlantController : EnemyController
 
             StopCoroutine(UpdateFacingDirection());
         }
+    }
+    void OnDeath()
+    {
+        // Stop all coroutines
+        StopAllCoroutines();
+
+        // Disable the navmesh agent
+        GetComponent<NavMeshAgent>().enabled = false;
+
+        // Disable the collider
+        GetComponent<Collider>().enabled = false;
+
+        // Trigger the death animation
+        _anim.SetTrigger("goDead");
     }
     protected override void Update()
     {
@@ -364,15 +379,6 @@ public class PlantController : EnemyController
     
     }
     private void OnDrawGizmos() {
-        if (enableDefaultAttack) {
-            Gizmos.color = Color.red;
-            Vector3 offset = new Vector3(attackRangeOffset.x, attackRangeOffset.y, 0);
-            Gizmos.DrawWireSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
-        }
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _playerSightRange);
-
         if (enableJumpAttack) {
             Gizmos.color = Color.green;
             float jumpMidpoint = (jumpAttackDistanceMax + jumpAttackDistanceMin) / 2;

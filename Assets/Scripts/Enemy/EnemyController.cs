@@ -2,9 +2,13 @@ using System;
 using System.Collections;
 using UnityEditor.EditorTools;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))]
 public class EnemyController : MonoBehaviour
 {
+    protected NavMeshAgent _navMeshAgent;
     protected Animator _anim;
 
     [HideInInspector]
@@ -50,11 +54,12 @@ public class EnemyController : MonoBehaviour
 
     private void Awake() {
         _anim = GetComponent<Animator>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     protected virtual void Start()
     {
-        // Find gamobject with name "Player"
         _player = GameObject.Find("Player");
+
         playerPosition = _player.transform.position;
         enemyState = EnemyState.Patrol;
 
@@ -83,13 +88,25 @@ public class EnemyController : MonoBehaviour
         if (enemyState == EnemyState.Fight && enableDefaultAttack)
             DefaultAttackUpdateLogic();
     }
+    [SerializeField]
     protected bool isAttacking = false;
+    [SerializeField]
     protected bool isCooledDown = true;
     protected bool canDefaultAttack = false;
     private void DefaultAttackUpdateLogic()
     {
+        // Distance check
         if(DistanceIgnoreY(transform.position, playerPosition) > attackRange)
         {   
+            canDefaultAttack = false;
+            return;
+        }
+
+        // Collider check
+        Vector3 offset = new Vector3(attackRangeOffset.x, attackRangeOffset.y, 0);
+        Collider[] colliders = Physics.OverlapSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
+        colliders = Array.FindAll(colliders, c => c.gameObject.tag == "Player");
+        if (colliders.Length == 0) {
             canDefaultAttack = false;
             return;
         }
@@ -110,6 +127,12 @@ public class EnemyController : MonoBehaviour
     private void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _playerSightRange);
+
+        if (enableDefaultAttack) {
+            Gizmos.color = Color.red;
+            Vector3 offset = new Vector3(attackRangeOffset.x, attackRangeOffset.y, 0);
+            Gizmos.DrawWireSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
+        }
     }
 
     protected Vector2 flattenVector(Vector3 vector)
@@ -126,4 +149,5 @@ public enum EnemyState
 {
     Patrol, // Enemy is patrolling
     Fight, // Enemy is fighting
+    Dead // Enemy is dead
 }
