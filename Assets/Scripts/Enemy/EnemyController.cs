@@ -2,9 +2,13 @@ using System;
 using System.Collections;
 using UnityEditor.EditorTools;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))]
 public class EnemyController : MonoBehaviour
 {
+    protected NavMeshAgent _navMeshAgent;
     protected Animator _anim;
 
     [HideInInspector]
@@ -50,6 +54,7 @@ public class EnemyController : MonoBehaviour
 
     private void Awake() {
         _anim = GetComponent<Animator>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     protected virtual void Start()
     {
@@ -144,4 +149,5 @@ public enum EnemyState
 {
     Patrol, // Enemy is patrolling
     Fight, // Enemy is fighting
+    Dead // Enemy is dead
 }
