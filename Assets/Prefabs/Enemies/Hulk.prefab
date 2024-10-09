@@ -2199,7 +2199,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8860070895710920930}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.4845457, y: 1.4300001, z: 44.07}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
@@ -2244,7 +2244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPosition: {x: 0, y: 0, z: 0}
   _player: {fileID: 0}
-  _playerSightRange: 40
+  _playerSightRange: 20
   enableDefaultAttack: 1
   attackRange: 2
   attackRangeOffset: {x: 0, y: 1}
@@ -2254,6 +2254,7 @@ MonoBehaviour:
   turnAndFaceSpeed: 5
   followUpdateRate: 1
   attackOffsetMuliplier: 0.8
+  _turnAnimationAngle: 70
 --- !u!114 &6200416066636726476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2527,6 +2528,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734667860330777029, guid: 903f4db2b10f5344eb0c8d6b82cabcd8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 216.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

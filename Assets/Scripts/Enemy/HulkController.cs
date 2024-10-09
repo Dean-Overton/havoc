@@ -64,6 +64,8 @@ public class HulkController : EnemyController
     }
     public override void Attack()
     {
+        _anim.SetFloat("locomotion", 0f);
+        
         if(!isCooledDown || isAttacking) 
             return;
         

@@ -1427,15 +1427,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5459673359206606028, guid: de81affb58c4c2548854a2471991234a,
+    - target: {fileID: 2927832915479608352, guid: de81affb58c4c2548854a2471991234a,
         type: 3}
-      propertyPath: _playerSightRange
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6013473327405472547, guid: de81affb58c4c2548854a2471991234a,
-        type: 3}
-      propertyPath: m_ObstacleAvoidanceType
-      value: 3
+      propertyPath: m_AnchoredPosition.y
+      value: 216.4
       objectReference: {fileID: 0}
     - target: {fileID: 6807537951612716158, guid: de81affb58c4c2548854a2471991234a,
         type: 3}
