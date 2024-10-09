@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
@@ -33,7 +34,10 @@ public class GameController : MonoBehaviour {
     }
 
     void CharacterDied(int characterID) {
-        if (characterID == 1) {
+        if (characterID == 0) {
+            return;
+        }
+        else if (characterID == 1) {
             Debug.Log("Player has died!");
             StartCoroutine(OnPlayerDeath());
         } else if (characterID >= 2) {
@@ -43,10 +47,12 @@ public class GameController : MonoBehaviour {
     }
 
     private IEnumerator OnPlayerDeath() {
+
+        yield return new WaitForSeconds(2f);
+
         // Reload the scene
         SceneManager.LoadScene(1);
         Destroy(this.gameObject);
-        yield return new WaitForSeconds(1f);
     }
 
     void Update() {

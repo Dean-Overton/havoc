@@ -122,5 +122,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   lifetime: 5
-  damage: 10
+  damage: 15
   slowDuration: 1

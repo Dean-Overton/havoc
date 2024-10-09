@@ -115,7 +115,7 @@ public class TeleportSlash : MonoBehaviour
         {
             // If a barrier is hit, set the target position to the hit point
             targetPosition = barrierHit.point;
-            Debug.Log("Hit barrier: " + barrierHit.collider.gameObject.name);
+            // Debug.Log("Hit barrier: " + barrierHit.collider.gameObject.name);
         }
 
         // Disable collision temporarily for a smooth teleport
@@ -135,7 +135,7 @@ public class TeleportSlash : MonoBehaviour
             if (enemyHealth != null)
             {
                 enemyHealth.ReduceCurrentHealth(damage);
-                Debug.Log("Dealt " + damage + " damage to " + hit.collider.gameObject.name);
+                // Debug.Log("Dealt " + damage + " damage to " + hit.collider.gameObject.name);
             }
         }
 
@@ -151,7 +151,7 @@ public class TeleportSlash : MonoBehaviour
         // Re-enable collision after teleportation
         _collider.enabled = true;
 
-        Debug.Log("Teleported to: " + targetPosition);
+        // Debug.Log("Teleported to: " + targetPosition);
     }
 
     // Function to get the direction from the player to the mouse cursor in world space

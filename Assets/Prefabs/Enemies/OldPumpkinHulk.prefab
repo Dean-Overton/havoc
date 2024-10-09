@@ -92,10 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7126d8d32f347f43aea7a02b39721e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _patrolWaypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  _patrolWaypoints: []
   _defaultMovementSpeed: 13
   _runMultiplier: 2
   _jumpTime: 0.5

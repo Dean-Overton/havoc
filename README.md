@@ -12,6 +12,7 @@
 * Make sure you are on the `Main Menu` scene: `Assets -> Scenes -> Main Menu`
 * Then click the `New Game` button
 * WASD to move, right-click to dash, left-click to shoot
+* The gun reloads after sometime without you left-clicking
 
 ## Making changes to Waves/Levels
 
@@ -34,9 +35,12 @@
         * You can select one of these empty game objects as a spawn point, or feel free to make your own
         * Probably have a different spawn point for each feild, otherwise enemies spawn and go flying
 
+## Other Notes:
+* In the enemies health components, you should see a characterID field. If you create a new initial enemy, ensure you set the character ID to `0`.
+
 ## Technical Game Structure
 
-The level begins when the player collides with one of the `_WaveTriggers_` child objects.\
+The level begins when the player kills the initial enemies in the level.\
 The next wave begins when the last enemy is killed in the last wave.\
 When the last wave has been completed, the bridge to the next island materialises out of thin air. 
 
