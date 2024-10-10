@@ -45,7 +45,7 @@ public class TeleportSlash : MonoBehaviour
                 StartCoroutine(Teleport());
 
                 // Reload the gun when you dash
-                Gun gun = GetComponent<Gun>();
+                GunController gun = GetComponent<GunController>();
                 if (gun != null)
                 {
                     gun.ReloadGun();
@@ -58,20 +58,6 @@ public class TeleportSlash : MonoBehaviour
                 if (!isReloadingDash)
                 {
                     StartCoroutine(ReloadDashesCoroutine());
-                }
-
-                // Trigger the camera dashing sequence or extend the dash duration
-                CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
-
-                if (cameraFollow != null && cameraFollow.isDashing)
-                {
-                    // If the camera is already in dashing mode, extend the hold time
-                    cameraFollow.ExtendDash(2f); // Extend dash by 2 seconds
-                }
-                else if (cameraFollow != null)
-                {
-                    // Start a new dash sequence with 4 seconds duration
-                    StartCoroutine(cameraFollow.DashingSequence(3f));
                 }
             }
             else
@@ -115,7 +101,6 @@ public class TeleportSlash : MonoBehaviour
         {
             // If a barrier is hit, set the target position to the hit point
             targetPosition = barrierHit.point;
-            // Debug.Log("Hit barrier: " + barrierHit.collider.gameObject.name);
         }
 
         // Disable collision temporarily for a smooth teleport
@@ -135,7 +120,6 @@ public class TeleportSlash : MonoBehaviour
             if (enemyHealth != null)
             {
                 enemyHealth.ReduceCurrentHealth(damage);
-                // Debug.Log("Dealt " + damage + " damage to " + hit.collider.gameObject.name);
             }
         }
 
@@ -150,8 +134,6 @@ public class TeleportSlash : MonoBehaviour
 
         // Re-enable collision after teleportation
         _collider.enabled = true;
-
-        // Debug.Log("Teleported to: " + targetPosition);
     }
 
     // Function to get the direction from the player to the mouse cursor in world space
@@ -198,7 +180,7 @@ public class TeleportSlash : MonoBehaviour
     }
 
     void OnDrawGizmos()
-    {
+    {   
         if (!Application.isPlaying) return;
 
         // Define the starting point of the sphere cast and the teleport direction
