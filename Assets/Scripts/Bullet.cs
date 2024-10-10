@@ -25,16 +25,19 @@ public class Bullet : MonoBehaviour
         health_component targetHealth = other.GetComponent<health_component>();
         if (targetHealth != null)
         {
-            // Debug.Log("i got here");
-            if (targetHealth.getCurrentHealth() - damage <= 0)
+            if (!targetHealth.isPlayer)
             {
-                targetHealth.SetCurrentHealth(1);
-                // Debug.Log("i got here1");
-            }
-            else
-            {
-                targetHealth.ReduceCurrentHealth(damage);
-                // Debug.Log("i got here2");
+                // Debug.Log("i got here");
+                if (targetHealth.getCurrentHealth() - damage <= 0)
+                {
+                    targetHealth.SetCurrentHealth(1);
+                    // Debug.Log("i got here1");
+                }
+                else
+                {
+                    targetHealth.ReduceCurrentHealth(damage);
+                    // Debug.Log("i got here2");
+                }
             }
         }
         Destroy(gameObject);
