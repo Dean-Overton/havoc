@@ -90,7 +90,10 @@ public class health_component : MonoBehaviour
         }
     }
     public event Action onDeath;
+    private bool isDead = false;
     public void DIE() {
+        if (isDead) return;
+        isDead = true;
         // Play the death sound
         AudioManager.instance.Play(deathSoundName);
         

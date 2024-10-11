@@ -135,10 +135,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Groot
       objectReference: {fileID: 0}
+    - target: {fileID: 1997757672928206192, guid: 1fcf3d1c339d8844da22fd3bb971635f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585703222879901386, guid: 1fcf3d1c339d8844da22fd3bb971635f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6617119850921678315, guid: 1fcf3d1c339d8844da22fd3bb971635f,
         type: 3}
       propertyPath: cacheTypes
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6743104901384950731, guid: 1fcf3d1c339d8844da22fd3bb971635f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7257389005153800840, guid: 1fcf3d1c339d8844da22fd3bb971635f,
         type: 3}
