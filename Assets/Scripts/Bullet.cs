@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Bullet hit: " + other.name);
         // Check whether the collision object has a Health component
         health_component targetHealth = other.GetComponent<health_component>();
         if (targetHealth != null)

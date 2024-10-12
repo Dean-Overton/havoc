@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class health_component : MonoBehaviour
@@ -10,6 +11,8 @@ public class health_component : MonoBehaviour
     [SerializeField] int passiveRegenHealthPerSecond = 1;
 
     [SerializeField] private int characterID = 2;
+
+    [SerializeField] public float destroyDelay = 0.5f;
 
     private float regenTimer = 0f; // Timer to track when to regenerate health
     [SerializeField] float regenInterval = 1f; // Time interval for health regeneration (in seconds)
@@ -100,5 +103,12 @@ public class health_component : MonoBehaviour
         EventManager.BroadcastCharacterDeath(characterID);        // Broadcast the character death event
         
         onDeath?.Invoke(); // Invoke the onDeath event
+
+        StartCoroutine(DestroyAfterDelay(destroyDelay));
+    }
+
+    private IEnumerator DestroyAfterDelay(float delay) {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
     }
 }

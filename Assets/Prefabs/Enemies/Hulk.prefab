@@ -2274,6 +2274,7 @@ MonoBehaviour:
   passiveRegen: 0
   passiveRegenHealthPerSecond: 1
   characterID: 2
+  destroyDelay: 0.5
   regenInterval: 1
   reduceDamageSoundName: MeatPunchSound
   deathSoundName: DeathSound
@@ -2308,7 +2309,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8860070895710920930}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8

@@ -3913,7 +3913,7 @@ MonoBehaviour:
   showPrefabGroups: 1
   instantiatePrefabsAsAdded: 1
   equipmentObjects: []
-  cacheTypes: 0
+  cacheTypes: 1
 --- !u!114 &588785712920894863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3931,6 +3931,8 @@ MonoBehaviour:
   maxHealth: 300
   passiveRegen: 1
   passiveRegenHealthPerSecond: 1
+  characterID: 2
+  destroyDelay: 0.5
   regenInterval: 1
   reduceDamageSoundName: MeatPunchSound
   deathSoundName: DeathSound
@@ -3953,6 +3955,8 @@ MonoBehaviour:
   attackRange: 3.5
   attackRangeOffset: {x: 0, y: 1}
   attackCooldown: 2
+  isAttacking: 0
+  isCooledDown: 1
   attackSwipeDamage: 20
   turnAndFaceSpeed: 3
   turnAndFaceUpdateTime: 2
@@ -4005,7 +4009,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 851066141613226807}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
