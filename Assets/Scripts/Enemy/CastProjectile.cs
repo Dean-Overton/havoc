@@ -10,7 +10,7 @@ public class CastProjectile : MonoBehaviour
     public Vector3 startDirection;
 
     public float damageRadius = 1.5f;
-    public int damage = 10;
+    public int damage = 30;
 
     void Start() {
         // Set the target position to the player's position
@@ -50,6 +50,7 @@ public class CastProjectile : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, damageRadius);
         foreach (var hitCollider in hitColliders) {
             if (hitCollider.CompareTag("Player")) {
+                Debug.Log("trying to access player health for ball blast");
                 if (hitCollider.TryGetComponent<health_component>(out health_component healthComponent)) {
                     healthComponent.ReduceCurrentHealth(damage);
                 }

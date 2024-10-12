@@ -44,10 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b77f55a1139acb4ca6e29bde3f66f11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duplicateSoundSetting: 0
   sounds:
   - name: MainMenuMusic
-    audioSound: {fileID: 8300000, guid: 01383e5e0e9d2f846940ff7e2ac6eae6, type: 3}
-    volume: 1
+    audioSound: {fileID: 8300000, guid: e838cad1aac7af543a04eb24be043643, type: 3}
+    volume: 0.7
     loop: 1
     playOnAwake: 0
     mixerGroup: {fileID: 24300002, guid: b5f472f5e8a607d438ee4704dd5084ac, type: 2}

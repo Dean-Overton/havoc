@@ -4,33 +4,37 @@ using System.Collections;
 public class CameraFollow : MonoBehaviour
 {
     public Transform target; // The player to follow
-    public float followSpeed = 2f; // Speed of following
+    public float followSpeed = 5f; // Speed of following (used when not panning)
+    public float panningFollowSpeed = 15f; // Speed of following during panning (used when panning with the middle mouse button)
     public Vector3 initialOffset = new Vector3(0f, 8f, -9f); // Initial camera follow offset
-    public Vector3 initialPanBackVector = new Vector3(0f, 15f, -19f); // Initial offset for aerial view during dash
-    public float rotateSpeed = 200f; // Speed of camera rotation when panning with the mouse
-    public bool isDashing = false; // Flag to check if in dashing sequence
-    private bool canDash = true; // Prevent overlapping dashes
-    private float dashHoldTimer = 0f; // Timer to hold the aerial view during dashing
-    private Vector3 currentOffset; // To track the dynamically updated offset for panning and dashing
-    private Vector3 currentPanBackVector; // Dynamic pan back vector that adjusts with panning
+    public float rotateSpeed = 300f; // Speed of camera panning when using the mouse (affects how quickly the camera rotates horizontally)
+    public float zoomSpeed = 2f; // Speed of zooming in and out
+    public float minZoom = 5f; // Minimum zoom level
+    public float maxZoom = 20f; // Maximum zoom level
+    private Vector3 currentOffset; // To track the dynamically updated offset for panning
 
     void Start()
     {
-        // Initialize the current offset and pan back vector to their initial values
+        // Initialize the current offset to its initial value
         currentOffset = initialOffset;
-        currentPanBackVector = initialPanBackVector;
     }
 
     void LateUpdate()
     {
-        if (isDashing || target == null) return; // Skip following behavior during dash
+        if (target == null) return; // Skip following behavior if no target
 
         HandlePanning(); // Handle mouse panning left and right
+        HandleZooming(); // Handle zooming in and out
+
+        float currentFollowSpeed = Input.GetMouseButton(2) ? panningFollowSpeed : followSpeed;
 
         // Smooth camera follow behavior
         Vector3 desiredPosition = target.position + currentOffset;
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
-        transform.LookAt(target);
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, currentFollowSpeed * Time.deltaTime);
+
+        // Smoothly rotate to look at the target
+        Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, currentFollowSpeed * Time.deltaTime);
     }
 
     // Handle left and right panning using mouse input (horizontal movement)
@@ -40,75 +44,20 @@ public class CameraFollow : MonoBehaviour
         {
             float mouseX = Input.GetAxis("Mouse X") * rotateSpeed * Time.deltaTime;
 
-            // Rotate the current offset around the Y-axis to pan the camera
-            Quaternion rotation = Quaternion.Euler(0, mouseX, 0);
+            // Rotate the current offset around the target's position to pan the camera
+            Quaternion rotation = Quaternion.AngleAxis(mouseX, Vector3.up);
             currentOffset = rotation * currentOffset;
-
-            // Adjust the panBackVector similarly to ensure proper zoom-out direction
-            currentPanBackVector = rotation * currentPanBackVector;
-
-            // Ensure the offset values don't multiply by zero (if they're too small)
-            if (Mathf.Abs(currentOffset.x) < 0.01f) currentOffset.x = 0.01f;
-            if (Mathf.Abs(currentOffset.z) < 0.01f) currentOffset.z = 0.01f;
-
-            // Ensure the panBackVector values don't multiply by zero (if they're too small)
-            if (Mathf.Abs(currentPanBackVector.x) < 0.01f) currentPanBackVector.x = 0.01f;
-            if (Mathf.Abs(currentPanBackVector.z) < 0.01f) currentPanBackVector.z = 0.01f;
         }
     }
 
-    // Coroutine to handle the dashing sequence (aerial view) and return to normal view
-    public IEnumerator DashingSequence(float dashDuration)
+    // Handle zooming in and out using the mouse scroll wheel
+    private void HandleZooming()
     {
-        if (!canDash) yield break; // Prevent overlapping dashes
-        canDash = false; // Disable additional dashes during this sequence
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        float zoomAmount = scrollInput * zoomSpeed;
 
-        isDashing = true; // Mark that the camera is in dashing mode
-
-        // Phase 1: Transition to aerial view
-        Vector3 startPosition = transform.position;
-        Vector3 aerialPosition = target.position + currentPanBackVector; // Use the dynamic panBackVector
-        float elapsedTime = 0f;
-
-        // Smoothly move to the aerial view
-        while (elapsedTime < dashDuration / 4f)
-        {
-            transform.position = Vector3.Lerp(startPosition, aerialPosition, elapsedTime / (dashDuration / 4f));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Snap to the final aerial position
-        transform.position = aerialPosition;
-
-        // Phase 2: Hold the aerial view for the duration of the dash
-        dashHoldTimer = dashDuration; // Initialize the hold timer
-
-        while (dashHoldTimer > 0f)
-        {
-            dashHoldTimer -= Time.deltaTime;
-            yield return null;
-        }
-
-        // Phase 3: Return to panned follow position
-        elapsedTime = 0f;
-        while (elapsedTime < dashDuration / 4f)
-        {
-            transform.position = Vector3.Lerp(aerialPosition, target.position + currentOffset, elapsedTime / (dashDuration / 4f));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Snap to the final position to avoid floating-point errors
-        transform.position = target.position + currentOffset;
-
-        isDashing = false; // End dashing mode, resume normal camera behavior
-        canDash = true; // Re-enable dashing
-    }
-
-    public void ExtendDash(float extraTime)
-    {
-        // Add extra time to the dash hold timer to prevent the camera from zooming back in too early
-        dashHoldTimer = Mathf.Max(dashHoldTimer, extraTime);
+        // Adjust the offset's magnitude based on the zoom input
+        currentOffset = Vector3.ClampMagnitude(currentOffset * (1 - zoomAmount), maxZoom);
+        currentOffset = currentOffset.normalized * Mathf.Clamp(currentOffset.magnitude, minZoom, maxZoom);
     }
 }

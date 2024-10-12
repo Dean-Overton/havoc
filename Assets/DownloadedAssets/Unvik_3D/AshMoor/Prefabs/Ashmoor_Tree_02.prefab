@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3965650138060002329}
   - component: {fileID: 47017725868153788}
   - component: {fileID: 2829383264174894966}
-  - component: {fileID: -4759642756494029322}
   - component: {fileID: 2872817997935547108}
   m_Layer: 0
   m_Name: Ashmoor_Tree_02
@@ -85,28 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-4759642756494029322
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4342316006471618211}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -4127212632250294236, guid: 89562f136e7b5b749a78d470eb926513, type: 3}
 --- !u!208 &2872817997935547108
 NavMeshObstacle:
   m_ObjectHideFlags: 0

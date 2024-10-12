@@ -23,6 +23,11 @@ public class GunController : MonoBehaviour
     public Transform bulletSpawnPoint; // The point where bullets are spawned
     public float bulletSpeed = 20f; // Speed at which the bullet will travel
     public float spawnOffset = 1f; // Distance to spawn the bullet ahead of the player
+    private float reloadTime;
+    public float reloadDelay = 1.5f;
+
+    public int ammo = 20;
+    public int maxAmmo = 20;
 
     [SerializeField] private string bulletSoundName = "LaserShot";
     private GameObject bin;
@@ -39,11 +44,12 @@ public class GunController : MonoBehaviour
         // Right-click to both spawn the gun and start firing
         if (Input.GetMouseButtonDown(1)) // Right-click (Mouse button 1)
         {
-            if (currentGun == null && !isSpawningGun)
+            reloadTime = 0;
+            if (currentGun == null && !isSpawningGun && ammo > 0)
             {
                 StartCoroutine(SpawnAndFireGunCoroutine());
             }
-            else if (currentGun != null && isShootingCoroutineRunning)
+            else if (currentGun != null && isShootingCoroutineRunning && ammo > 0)
             {
                 // If the player clicks again, restart the firing process
                 StartCoroutine(ShootingCoroutine());
@@ -66,6 +72,16 @@ public class GunController : MonoBehaviour
                 despawnCoroutine = StartCoroutine(StopAndHoldGunCoroutine());
             }
         }
+
+        if (!Input.GetMouseButton(1)) {
+            reloadTime += Time.deltaTime;
+            if (reloadTime >= reloadDelay)
+            {
+                ReloadGun();
+                reloadTime = 0;
+            }
+        }
+
     }
 
     private IEnumerator SpawnAndFireGunCoroutine()
@@ -99,7 +115,7 @@ public class GunController : MonoBehaviour
         GetComponent<CharacterFacing>().RotateTowardMouse = true;
 
         // Keep firing as long as right-click is held down
-        while (Input.GetMouseButton(1))
+        while (Input.GetMouseButton(1) && ammo > 0)
         {
             if (Time.time >= nextFireTime)
             {
@@ -121,9 +137,10 @@ public class GunController : MonoBehaviour
 
                 // Play the shooting sound
                 AudioManager.instance.Play(bulletSoundName);
-                Debug.Log("Playing sound: " + bulletSoundName);
+                // Debug.Log("Playing sound: " + bulletSoundName);
 
                 nextFireTime = Time.time + fireRate;
+                ammo--;
             }
 
             yield return null; // Wait for the next frame
@@ -182,5 +199,10 @@ public class GunController : MonoBehaviour
 
         // Change the scale of the gun
         spawnedGun.transform.localScale = gunScale;
+    }
+
+    public void ReloadGun()
+    {
+        ammo = maxAmmo; 
     }
 }

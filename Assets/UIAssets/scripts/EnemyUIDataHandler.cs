@@ -18,10 +18,18 @@ public class EnemyUIDataHandler : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {        
         health = healthComp.getCurrentHealth();
         maxHealth = healthComp.getMaxHealth();
+
         float healthPercentage = (float)health / maxHealth;
+
+        // If health is zero, hide the health bar
+        if (health <= 0)
+        {
+            enemyHealthBar.gameObject.SetActive(false);
+            return;
+        }
 
         if (enemyHealthBar != null)
         {

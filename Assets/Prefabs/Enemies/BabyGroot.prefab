@@ -5553,7 +5553,7 @@ MonoBehaviour:
   showPrefabGroups: 1
   instantiatePrefabsAsAdded: 1
   equipmentObjects: []
-  cacheTypes: 1
+  cacheTypes: 0
 --- !u!114 &1720882452292623082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5571,6 +5571,9 @@ MonoBehaviour:
   maxHealth: 50
   passiveRegen: 1
   passiveRegenHealthPerSecond: 1
+  deathEffectPrefab: {fileID: 194062, guid: 8c27aeead6d968e4ba986702d6b84335, type: 3}
+  characterID: 2
+  destroyDelay: 0.5
   regenInterval: 1
   reduceDamageSoundName: MeatPunchSound
   deathSoundName: DeathSound
@@ -5588,11 +5591,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPosition: {x: 0, y: 0, z: 0}
   _player: {fileID: 598559946749106126, guid: 8ce7552b353e1f945b26b1e44e9a9c66, type: 3}
-  _playerSightRange: 10
+  _playerSightRange: 40
   enableDefaultAttack: 0
   attackRange: 3.5
   attackRangeOffset: {x: 0, y: 1}
   attackCooldown: 2
+  isAttacking: 0
+  isCooledDown: 1
   attackSwipeDamage: 20
   turnAndFaceSpeed: 3
   turnAndFaceUpdateTime: 2
@@ -5610,7 +5615,7 @@ MonoBehaviour:
   jumpDamage: 5
   enablePlayerFollow: 1
   followSpeed: 1.5
-  followUpdateRate: 2
+  followUpdateRate: 0.1
   stopDistance: 2.5
 --- !u!114 &403276189785325149
 MonoBehaviour:
@@ -5658,7 +5663,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5399299914887736095}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
@@ -5718,13 +5723,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.7
-  m_Radius: 0.5
+  m_Height: 2
+  m_Radius: 0.8
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.8, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &-5304510042174003598
 MonoBehaviour:
   m_ObjectHideFlags: 0
