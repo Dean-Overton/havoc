@@ -75,16 +75,14 @@ public class LevelController : MonoBehaviour
             }
         }
         if (currentLevel >= levels.Length) {
-            Debug.Log("All levels complete!");
+            EventManager.BroadcastGameComplete();
             return;
         }
-        // Invoke("SpawnWave", 5f);
     }
 
     public void EnemyKilled(int enemyID) {
         Level _level = levels[currentLevel];
 
-        // Debug.Log("Enemy " + enemyID + " killed!");
         _level.waves[_level.getCurrentWave()].enemiesRemaining--;
 
         if (_level.waves[_level.getCurrentWave()].enemiesRemaining <= 0) {
@@ -110,11 +108,6 @@ public class LevelController : MonoBehaviour
         for (int i = 0; i < _level.waves[_level.getCurrentWave()].enemies.Length; i++) {
             Instantiate(_level.waves[_level.getCurrentWave()].enemies[i], _level.waves[_level.getCurrentWave()].spawnPoints[i].position, _level.waves[_level.getCurrentWave()].spawnPoints[i].rotation, enemiesParent.transform);
         }
-    }
-
-    void Update()
-    {
-        
     }
 }
 

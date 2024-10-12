@@ -7,7 +7,6 @@ using UnityEngine.TextCore.Text;
 
 public class GameController : MonoBehaviour {
     public static GameController instance;
-    Scene currentScene;
 
     LevelController levelController;
 
@@ -20,11 +19,8 @@ public class GameController : MonoBehaviour {
 
             EventManager.OnCharacterDeath += CharacterDied;
             EventManager.OnNewLevelEnter += NewLevelEntered;
+            EventManager.OnGameComplete += GameComplete;
 
-            // currentScene = SceneManager.GetActiveScene();
-            // if (currentScene.buildIndex == 1){
-            //     Invoke("OnNewGame", 1f);
-            // }
             SceneManager.sceneLoaded += OnSceneLoaded;
         } else {
             instance = gameObject.GetComponent<GameController>();
@@ -34,7 +30,6 @@ public class GameController : MonoBehaviour {
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (scene.buildIndex == 1) {
-            Debug.Log("Scene loaded --- 1: " + scene.name);
             Invoke("OnNewGame", 1f);
         }
     }
@@ -58,7 +53,6 @@ public class GameController : MonoBehaviour {
         } else if (characterID >= 2) {
            levelController.EnemyKilled(characterID);
         }
-        // Add more logic for different enemies
     }
 
     private IEnumerator OnPlayerDeath() {
@@ -76,10 +70,16 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    private void GameComplete() {
+        Debug.Log("Game complete!");
+        SceneManager.LoadSceneAsync(0);
+    }
+
     void OnDestroy() {
         // Unsubscribe from the event to prevent memory leaks
         EventManager.OnCharacterDeath -= CharacterDied;
         EventManager.OnNewLevelEnter -= NewLevelEntered;
+        EventManager.OnGameComplete -= GameComplete;
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
