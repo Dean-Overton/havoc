@@ -72,6 +72,11 @@ public class GameController : MonoBehaviour {
 
     private void GameComplete() {
         Debug.Log("Game complete!");
+        StartCoroutine(GameCompleteCoroutine());
+    }
+
+    private IEnumerator GameCompleteCoroutine() {
+        yield return new WaitForSeconds(5f);
         SceneManager.LoadSceneAsync(0);
     }
 
