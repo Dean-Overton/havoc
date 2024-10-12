@@ -3951,7 +3951,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPosition: {x: 0, y: 0, z: 0}
   _player: {fileID: 598559946749106126, guid: 8ce7552b353e1f945b26b1e44e9a9c66, type: 3}
-  _playerSightRange: 12
+  _playerSightRange: 50
   enableDefaultAttack: 1
   attackRange: 3.5
   attackRangeOffset: {x: 0, y: 1}

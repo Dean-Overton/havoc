@@ -96,17 +96,34 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    private void SpawnWave() {
+    private void SpawnWave()
+    {
         Level _level = levels[currentLevel];
 
-        if (_level.waves.Length <= 0) {
+        if (_level.waves.Length <= 0)
+        {
             LevelComplete();
             return;
         }
 
         _level.waves[_level.getCurrentWave()].SetEnemiesRemaining(_level.waves[_level.getCurrentWave()].enemies.Length);
-        for (int i = 0; i < _level.waves[_level.getCurrentWave()].enemies.Length; i++) {
-            Instantiate(_level.waves[_level.getCurrentWave()].enemies[i], _level.waves[_level.getCurrentWave()].spawnPoints[i].position, _level.waves[_level.getCurrentWave()].spawnPoints[i].rotation, enemiesParent.transform);
+
+        // Define offset range
+        float offsetRange = 2.0f; // Adjust the range as needed
+
+        for (int i = 0; i < _level.waves[_level.getCurrentWave()].enemies.Length; i++)
+        {
+            // Generate random offsets
+            float randomOffsetX = Random.Range(-offsetRange, offsetRange);
+            float randomOffsetZ = Random.Range(-offsetRange, offsetRange);
+
+            // Apply the offset to the spawn point's position
+            Vector3 spawnPosition = _level.waves[_level.getCurrentWave()].spawnPoints[i].position;
+            spawnPosition.x += randomOffsetX;
+            spawnPosition.z += randomOffsetZ;
+
+            // Instantiate the enemy with the offset spawn position
+            Instantiate(_level.waves[_level.getCurrentWave()].enemies[i],spawnPosition,_level.waves[_level.getCurrentWave()].spawnPoints[i].rotation,enemiesParent.transform);
         }
     }
 }
