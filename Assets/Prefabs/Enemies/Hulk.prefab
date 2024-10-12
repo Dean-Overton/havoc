@@ -2245,15 +2245,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPosition: {x: 0, y: 0, z: 0}
   _player: {fileID: 0}
-  _playerSightRange: 20
+  _playerSightRange: 40
   enableDefaultAttack: 1
   attackRange: 2
   attackRangeOffset: {x: 0, y: 1}
   attackCooldown: 3
   isAttacking: 0
   isCooledDown: 1
-  turnAndFaceSpeed: 5
-  followUpdateRate: 1
+  turnAndFaceSpeed: 10
+  followUpdateRate: 0.1
   attackOffsetMuliplier: 0.8
   _turnAnimationAngle: 70
 --- !u!114 &6200416066636726476
@@ -2297,8 +2297,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4
-  m_Height: 2
+  m_Radius: 0.7
+  m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!195 &6013473327405472547

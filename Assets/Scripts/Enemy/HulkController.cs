@@ -38,6 +38,7 @@ public class HulkController : EnemyController
     }
     void OnDeath()
     {
+        //Debug.Log("hulk died earleir than expexted");
         // Stop all coroutines
         StopAllCoroutines();
 
@@ -93,48 +94,36 @@ public class HulkController : EnemyController
     }
     IEnumerator UpdateTrackingPosition()
     {
-        NavMeshTurnUpdate();
-
         while (true)
         {
-            yield return new WaitUntil(() => !isAttacking);
+            if (!isAttacking)
+            {
+                float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
 
-            float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
+                if (distanceToPlayer > attackRange * attackOffsetMuliplier)
+                {
+                    if (_navMeshAgent.destination != playerPosition)
+                    {
+                        _navMeshAgent.SetDestination(playerPosition);
+                        _navMeshAgent.isStopped = false;
 
-            if (distanceToPlayer > attackRange*attackOffsetMuliplier) {
-                if (_navMeshAgent.destination != playerPosition) {
-                    _navMeshAgent.SetDestination(playerPosition);
-
-                    // When updating target, check path is different and turn to face force point in path
-                    // before moving
-
-                    // Get the direction to the next point in the path
-                    Vector3 direction;
-                    if (_navMeshAgent.path.corners.Length > 1) { 
-                        // Set the direction to the next point in the path
-                        direction = (_navMeshAgent.path.corners[1] - transform.position).normalized;
-                    } else {
-                        // Otherwise, set the direction to the player if no corner exist in path
-                        direction = (playerPosition - transform.position).normalized;
+                        // Face the next path point immediately, avoid waiting unnecessarily
+                        Vector3 direction = (_navMeshAgent.steeringTarget - transform.position).normalized;
+                        Quaternion targetRotation = Quaternion.LookRotation(direction);
+                        StartCoroutine(TurnAndFace(targetRotation));
                     }
-                    // Get the rotation towards the next point in the path
+                }
+                else
+                {
+                    _navMeshAgent.isStopped = true;
+                    // Immediately face the player
+                    Vector3 direction = (playerPosition - transform.position).normalized;
                     Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    // Turn and face the next point in the path
                     StartCoroutine(TurnAndFace(targetRotation));
-                    // Wait until the rotation is within 1 degree of the target rotation
-                    yield return new WaitUntil(() => Quaternion.Angle(transform.rotation, targetRotation) < 1f);
-                    //Start moving
-                    _navMeshAgent.isStopped = false;
                 }
             }
-            else {
-                _navMeshAgent.isStopped = true;
-
-                Quaternion targetRotation = Quaternion.LookRotation((playerPosition - transform.position).normalized);
-                StartCoroutine(TurnAndFace(targetRotation));
-            }
-            
-            yield return new WaitForSeconds(followUpdateRate);
+            // Reduce the wait time between follow-up updates
+            yield return new WaitForSeconds(followUpdateRate * 0.5f); // Make it update more frequently
         }
     }
     [Tooltip("The angle at which the enemy will play an animation to turn.")]
