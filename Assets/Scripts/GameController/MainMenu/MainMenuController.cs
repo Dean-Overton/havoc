@@ -6,14 +6,19 @@ public class MainMenuController : MonoBehaviour
 {
     private UIDocument _document;
     private Button newGameButton;
+    private Button exitButton;
     private Scene currentScene;
 
     private void Start() {
+        currentScene = SceneManager.GetActiveScene();      // Getting the current scene
         if (currentScene.buildIndex == 0) {
             _document = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UIDocument>();  // Getting the UI document from the main camera game object
             newGameButton = _document.rootVisualElement.Q("NewGame-Button") as Button;      // Getting the "New Game" button from the document
             newGameButton.RegisterCallback<ClickEvent>(OnNewGame);      // Making this button a click event listener
-            
+
+            exitButton = _document.rootVisualElement.Q("Exit-Button") as Button;      // Getting the "Exit" button from the document
+            exitButton.RegisterCallback<ClickEvent>(click => Application.Quit());      // Making this button a click event listener
+
             AudioManager.instance.Play("MainMenuMusic");      // Play the main menu music
         }
     }

@@ -412,7 +412,7 @@ MonoBehaviour:
   gunPrefab: {fileID: 5473516867421612741, guid: b9e0d6088196adc42aa1fd351923a29a,
     type: 3}
   handBone: {fileID: 292970059129274722}
-  fireRate: 0.2
+  fireRate: 0.1
   holdGunDuration: 1
   isShootingCoroutineRunning: 0
   isShooting: 0
@@ -445,6 +445,8 @@ MonoBehaviour:
   maxHealth: 200
   passiveRegen: 1
   passiveRegenHealthPerSecond: 1
+  characterID: 2
+  destroyDelay: 0.5
   regenInterval: 1
   reduceDamageSoundName: MeatPunchSound
   deathSoundName: DeathSound

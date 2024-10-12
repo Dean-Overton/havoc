@@ -21,20 +21,24 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Bullet hit: " + other.name);
         // Check whether the collision object has a Health component
         health_component targetHealth = other.GetComponent<health_component>();
         if (targetHealth != null)
         {
-            // Debug.Log("i got here");
-            if (targetHealth.getCurrentHealth() - damage <= 0)
+            if (!targetHealth.isPlayer)
             {
-                targetHealth.SetCurrentHealth(1);
-                // Debug.Log("i got here1");
-            }
-            else
-            {
-                targetHealth.ReduceCurrentHealth(damage);
-                // Debug.Log("i got here2");
+                // Debug.Log("i got here");
+                if (targetHealth.getCurrentHealth() - damage <= 0)
+                {
+                    targetHealth.SetCurrentHealth(1);
+                    // Debug.Log("i got here1");
+                }
+                else
+                {
+                    targetHealth.ReduceCurrentHealth(damage);
+                    // Debug.Log("i got here2");
+                }
             }
         }
         Destroy(gameObject);

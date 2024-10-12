@@ -38,7 +38,13 @@ public class EnemyHealthBarGradient : MonoBehaviour
         healthBarCanvasGroup.alpha = 0f;
         healthBarImage.color = healthGradient.Evaluate(1f); // Start with full health color
     }
-
+    private void OnDisable() {
+        // Stop the coroutine when the object is disabled
+        if (hideHealthBarCoroutine != null)
+        {
+            StopCoroutine(hideHealthBarCoroutine);
+        }
+    }
     public void SetHealth(float healthPercentage)
     {
         healthPercentage = Mathf.Clamp01(healthPercentage);
@@ -55,7 +61,7 @@ public class EnemyHealthBarGradient : MonoBehaviour
         }
 
         // Start a coroutine to hide the health bar after a delay
-        hideHealthBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f)); // Hide after 2 seconds of inactivity
+        //hideHealthBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f)); // Hide after 2 seconds of inactivity
     }
 
     private void ShowHealthBar()
