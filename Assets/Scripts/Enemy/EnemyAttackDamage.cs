@@ -25,7 +25,8 @@ public class EnemyAttackDamage : StateMachineBehaviour
         _timer += Time.deltaTime;
         if (_timer >= _damageDelay && !_attacked)
         {
-            DealDamage();
+            GameObject gameObject = animator.gameObject;
+            DealDamage(gameObject);
             _timer = 0f;
             _attacked = true;
         }
@@ -50,13 +51,9 @@ public class EnemyAttackDamage : StateMachineBehaviour
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
 
-    private void DealDamage()
+    private void DealDamage(GameObject gameObject)
     {
-        health_component healthComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<health_component>();
-        if (healthComponent != null)
-        {
-            healthComponent.ReduceCurrentHealth(_damageAmount);
-            Debug.Log($"Applying {_damageAmount} damage");
-        }
+        gameObject.GetComponent<EnemyController>().DealDamage(_damageAmount);
+        Debug.Log($"Attack with {_damageAmount} damage");
     }
 }

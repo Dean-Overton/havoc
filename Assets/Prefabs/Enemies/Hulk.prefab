@@ -2245,15 +2245,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPosition: {x: 0, y: 0, z: 0}
   _player: {fileID: 0}
-  _playerSightRange: 40
+  _playerSightRange: 20
   enableDefaultAttack: 1
   attackRange: 2
   attackRangeOffset: {x: 0, y: 1}
-  attackCooldown: 3
+  attackCooldown: 1.5
   isAttacking: 0
   isCooledDown: 1
-  turnAndFaceSpeed: 10
-  followUpdateRate: 0.1
+  turnAndFaceSpeed: 0.5
+  followUpdateRate: 0.5
   attackOffsetMuliplier: 0.8
   _turnAnimationAngle: 70
 --- !u!114 &6200416066636726476
@@ -2275,7 +2275,7 @@ MonoBehaviour:
   passiveRegenHealthPerSecond: 1
   deathEffectPrefab: {fileID: 194062, guid: 8c27aeead6d968e4ba986702d6b84335, type: 3}
   characterID: 2
-  destroyDelay: 0.5
+  destroyDelay: 5
   regenInterval: 1
   reduceDamageSoundName: MeatPunchSound
   deathSoundName: DeathSound
@@ -2312,7 +2312,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 4.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
