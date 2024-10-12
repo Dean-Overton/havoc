@@ -87,10 +87,10 @@ public class TeleportSlash : MonoBehaviour
     {
         if (_characterController == null || _collider == null)
         {
-            yield break; // If necessary components are missing, exit early
+            yield break; // Exit early if necessary components are missing
         }
 
-        Vector3 teleportDirection = GetMouseDirection();
+        Vector3 teleportDirection = GetMouseDirection();  // Get the direction of the dash
 
         // Calculate the intended teleport position
         Vector3 targetPosition = transform.position + teleportDirection * teleportDistance;
@@ -106,20 +106,16 @@ public class TeleportSlash : MonoBehaviour
         // Disable collision temporarily for a smooth teleport
         _collider.enabled = false;
 
-        // Draw the ray for debugging purposes (shows the teleport direction in the Scene view)
-        Debug.DrawRay(transform.position, teleportDirection * teleportDistance, Color.red, 2f); // Draws for 2 seconds
-
-        // Define a radius for the sphere cast to make the detection area larger
-        float sphereRadius = 1.0f;
-
         // Perform a sphere cast to deal damage to any enemies in the teleport path
+        float sphereRadius = 1.0f;
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, sphereRadius, teleportDirection, teleportDistance, enemyLayer);
         foreach (RaycastHit hit in hits)
         {
             health_component enemyHealth = hit.collider.GetComponent<health_component>();
             if (enemyHealth != null)
             {
-                enemyHealth.ReduceCurrentHealth(damage);
+                // Pass the dash direction to the enemy's health component
+                enemyHealth.ReduceCurrentHealth(damage, teleportDirection);
             }
         }
 
