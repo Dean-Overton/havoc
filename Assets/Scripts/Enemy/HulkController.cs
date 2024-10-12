@@ -1,8 +1,6 @@
 
 using System.Collections;
-//using UnityEditor.EditorTools;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class HulkController : EnemyController
 {
@@ -31,10 +29,6 @@ public class HulkController : EnemyController
             _navMeshAgent.stoppingDistance = attackRange*attackOffsetMuliplier;
             StartCoroutine(UpdateTrackingPosition());
         }
-        else if(newState == EnemyState.Patrol)
-        {
-            // 
-        }
     }
     void OnDeath()
     {
@@ -61,7 +55,23 @@ public class HulkController : EnemyController
         if (isAttacking || enemyState == EnemyState.Patrol || enemyState == EnemyState.Dead) {
             _anim.SetFloat("locomotion", 0f);
         }
-    
+
+        NavMeshFacingUpdate();
+    }
+    private void NavMeshFacingUpdate() {
+        if (_navMeshAgent.hasPath) {            
+            Vector3 direction = _navMeshAgent.desiredVelocity.normalized;
+
+            // Optionally, rotate the character to face the direction of movement
+            if (direction != Vector3.zero)
+            {
+                turnDirection = direction;
+
+                if (turnAndFaceCoroutine == null && !CheckFacing(transform.position + direction)) {
+                    turnAndFaceCoroutine = StartCoroutine(TurnAndFace(transform.position + direction));
+                }
+            }
+        }
     }
     public override void Attack()
     {
@@ -76,6 +86,9 @@ public class HulkController : EnemyController
     }
     IEnumerator SwipeAttack()
     {
+        // Wait for turning and facing to finish
+        yield return new WaitUntil(() => turnAndFaceCoroutine == null);
+
         // Play the attack animation
         string[] attackTriggers = new string[] { "swing", "punch" };
 
@@ -96,101 +109,148 @@ public class HulkController : EnemyController
     {
         while (true)
         {
-            if (!isAttacking)
-            {
-                float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
+            yield return new WaitUntil(() => !isAttacking);
 
-                if (distanceToPlayer > attackRange * attackOffsetMuliplier)
-                {
-                    if (_navMeshAgent.destination != playerPosition)
-                    {
-                        _navMeshAgent.SetDestination(playerPosition);
-                        _navMeshAgent.isStopped = false;
+            float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
 
-                        // Face the next path point immediately, avoid waiting unnecessarily
-                        Vector3 direction = (_navMeshAgent.steeringTarget - transform.position).normalized;
-                        Quaternion targetRotation = Quaternion.LookRotation(direction);
-                        StartCoroutine(TurnAndFace(targetRotation));
-                    }
-                }
-                else
-                {
+            if (distanceToPlayer > attackRange*attackOffsetMuliplier) {
+                if (_navMeshAgent.destination != playerPosition) {
+                    _navMeshAgent.SetDestination(playerPosition);
+
+                    // Update facing direction
+                    // Set the target for the player
+                    Vector3 target = playerPosition;
+                    // Replace target with the next point in the path if it exists
+                    if (_navMeshAgent.path.corners.Length > 1)
+                        target = _navMeshAgent.path.corners[1];
+
+                    // Stop before turning
                     _navMeshAgent.isStopped = true;
-                    // Immediately face the player
-                    Vector3 direction = (playerPosition - transform.position).normalized;
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    StartCoroutine(TurnAndFace(targetRotation));
+                    // Turn and face the next point in the path
+                    turnAndFaceCoroutine = StartCoroutine(TurnAndFace(target));
+                    yield return new WaitUntil(() => turnAndFaceCoroutine == null);
+                    
+                    _navMeshAgent.isStopped = false;
                 }
             }
-            // Reduce the wait time between follow-up updates
-            yield return new WaitForSeconds(followUpdateRate * 0.5f); // Make it update more frequently
+            else {
+                _navMeshAgent.isStopped = true;
+
+                turnAndFaceCoroutine = StartCoroutine(TurnAndFace(playerPosition));
+            }
+            
+            yield return new WaitForSeconds(followUpdateRate);
         }
+    }
+    private Coroutine _turnAndFaceCoroutine = null;
+
+    // Property to encapsulate coroutine management
+    private Coroutine turnAndFaceCoroutine
+    {
+        get { return _turnAndFaceCoroutine; }
+        set
+        {
+            // Stop the current coroutine if it's already running
+            if (_turnAndFaceCoroutine != null)
+            {
+                StopCoroutine(_turnAndFaceCoroutine);
+            }
+
+            // Start the new coroutine if the value is not null
+            _turnAndFaceCoroutine = value;
+        }
+    }
+    bool CheckFacing (Vector3 targetPosition) {
+        Vector3 directionToTarget = targetPosition - transform.position;
+        float angle = Vector3.SignedAngle(transform.forward, directionToTarget, Vector3.up);
+        return Mathf.Abs(angle) < 1f;
     }
     [Tooltip("The angle at which the enemy will play an animation to turn.")]
     [SerializeField] private float _turnAnimationAngle = 70f;
-    IEnumerator TurnAndFace(Quaternion targetRotation, float turnAndFaceSpeedModifier = 1f)
-    {
-        // Stop multiple calls to this coroutine
-        StopCoroutine("TurnAndFace");
+    IEnumerator TurnAndFace(Vector3 targetPosition, float turnAndFaceSpeedModifier = 1f)
+    {        
+        // Calculate direction to the target
+        Vector3 directionToTarget = targetPosition - transform.position;
 
-        float initialAngle = Vector3.Cross(transform.forward, targetRotation * Vector3.forward).y;
-        bool wasStopped = _navMeshAgent.isStopped;
+        // if already facing target position, return
+        float initialAngle = Vector3.SignedAngle(transform.forward, directionToTarget, Vector3.up);
+        if (Mathf.Abs(initialAngle) < 1f) {
+            yield break;
+        }
+
+        // float initialAngle = Vector3.Cross(transform.forward, targetRotation * Vector3.forward).y;
 
         // TURNING ANIMATION
         // Check angle is greater than _turnAnimationAngle and turn right animation if so
         if (initialAngle > 70f && initialAngle < 180f) {
             _anim.SetTrigger("turnRight");
-            if (!wasStopped) {
+            if (!_navMeshAgent.isStopped) {
                 _navMeshAgent.isStopped = true;
             }
         }
         // Check angle is less than -_turnAnimationAngle and turn left animation if so
         else if (initialAngle < -70f && initialAngle > -180f) {
             _anim.SetTrigger("turnLeft");
-            if (!wasStopped) {
+            if (!_navMeshAgent.isStopped) {
                 _navMeshAgent.isStopped = true;
             }
         }
 
         // ROTATING TRANSFORM
-        // Check facing within 1 degree of player
-        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.3f)
+        float angle = initialAngle;
+        // Convert vector3 angle to quaternion rotation
+        Quaternion lookRotation = Quaternion.LookRotation(directionToTarget);
+        float time = 0f;
+        while (Mathf.Abs(angle) > 1f)
         {
-            float angle = Quaternion.Angle(transform.rotation, targetRotation);
-            // map angle to 1 to 0, 1 being 180 degrees and 0 being 0 degrees
-            // float animationSpeed = Mathf.Clamp01(angle / 90 + 0.2f);
-
             // Smoothly rotate towards the target rotation over time
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnAndFaceSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, time);
+            
+            time += Time.deltaTime * turnAndFaceSpeed * turnAndFaceSpeedModifier;
 
-            // Wait for the next frame before continuing the loop
+            // Get the angle between the current rotation and the target rotation
+            angle = Vector3.SignedAngle(transform.forward, directionToTarget, Vector3.up);
             yield return null;
         }
-
-        // Check if the navmesh agent was stopped before turning and set it back to normal
-        if (wasStopped) {
-            _navMeshAgent.isStopped = true;
-        } else {
-            _navMeshAgent.isStopped = false;
-        }
-    }
-    IEnumerator NavMeshTurnUpdate () {
-        while (true) {
-            yield return new WaitUntil(() => !isAttacking);
-            yield return new WaitUntil(() => _navMeshAgent.velocity.sqrMagnitude > 0.1f);
-
-            // Get the direction to the next point in the path
-            Vector3 direction = _navMeshAgent.velocity.normalized;
-            // Get the rotation towards the next point in the path
-            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            
-            if (Quaternion.Angle(transform.rotation, targetRotation) > 1f) {
-                // Turn and face the next point in the path
-                StartCoroutine(TurnAndFace(targetRotation));
+        
+        // Wait until animation finished
+        AnimatorStateInfo stateInfo = _anim.GetCurrentAnimatorStateInfo(0);
+        if (initialAngle > 70f && initialAngle < 180f) {
+            if (stateInfo.IsName("rightTurn")) {
+                yield return new WaitUntil(() => _anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
             }
-            // Wait until the rotation is within 1 degree of the target rotation
-            yield return new WaitUntil(() => Quaternion.Angle(transform.rotation, targetRotation) < 1f);
         }
+        else if (initialAngle < -70f && initialAngle > -180f) {
+            if (stateInfo.IsName("leftTurn")) {
+                yield return new WaitUntil(() => _anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+            }
+        }
+        // Signal that the coroutine has finished
+        turnAndFaceCoroutine = null;
     }
+    public override void DealDamage(int thisDamage = 20)
+    {
+        // do phyics collision in front of plant and check if player is hit
+        // if player is hit, apply damage
+
+        Vector3 offset = new Vector3(attackRangeOffset.x, attackRangeOffset.y, 0);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Player"))
+            {
+                hitCollider.GetComponent<health_component>().ReduceCurrentHealth(thisDamage);
+
+                break; // Only hit the player once
+            }
+        }
     
+    }
+    Vector3 turnDirection;
+    private void OnDrawGizmos() {
+        // Draw line to show direction turning to
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + turnDirection);
+    }
 }

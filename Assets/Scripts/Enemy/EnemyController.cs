@@ -134,7 +134,11 @@ public class EnemyController : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position + offset + transform.forward * (attackRange/2), attackRange/2);
         }
     }
-
+    virtual public void DealDamage(int damageAmount)
+    {
+        // Deal damage to the player
+        Debug.LogError("The enemy is dealing damage to the player. But the DealDamage() method is not implemented.");
+    }
     protected Vector2 flattenVector(Vector3 vector)
     {
         return new Vector2(vector.x, vector.z);
