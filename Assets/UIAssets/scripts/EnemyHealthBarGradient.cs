@@ -61,7 +61,7 @@ public class EnemyHealthBarGradient : MonoBehaviour
         }
 
         // Start a coroutine to hide the health bar after a delay
-        hideHealthBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f)); // Hide after 2 seconds of inactivity
+        //hideHealthBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f)); // Hide after 2 seconds of inactivity
     }
 
     private void ShowHealthBar()

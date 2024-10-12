@@ -2273,6 +2273,8 @@ MonoBehaviour:
   maxHealth: 100
   passiveRegen: 0
   passiveRegenHealthPerSecond: 1
+  deathEffectPrefab: {fileID: 3659620918895032952, guid: eb724a43f0b2bb74c8d786e5f4d55ee4,
+    type: 3}
   characterID: 2
   destroyDelay: 0.5
   regenInterval: 1

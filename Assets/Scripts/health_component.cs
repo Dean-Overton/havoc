@@ -9,10 +9,10 @@ public class health_component : MonoBehaviour
     [SerializeField] int maxHealth = 100;
     [SerializeField] bool passiveRegen = false;
     [SerializeField] int passiveRegenHealthPerSecond = 1;
-
+    [SerializeField] public GameObject deathEffectPrefab;  // Reference to the particle system prefab
     [SerializeField] private int characterID = 2;
 
-    [SerializeField] public float destroyDelay = 0.5f;
+    [SerializeField] public float destroyDelay = 0.2f;
 
     private float regenTimer = 0f; // Timer to track when to regenerate health
     [SerializeField] float regenInterval = 1f; // Time interval for health regeneration (in seconds)
@@ -99,12 +99,16 @@ public class health_component : MonoBehaviour
         isDead = true;
         // Play the death sound
         AudioManager.instance.Play(deathSoundName);
-        
+        if (deathEffectPrefab != null)
+        {
+            Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
+        }
         EventManager.BroadcastCharacterDeath(characterID);        // Broadcast the character death event
         
         onDeath?.Invoke(); // Invoke the onDeath event
 
         StartCoroutine(DestroyAfterDelay(destroyDelay));
+
     }
 
     private IEnumerator DestroyAfterDelay(float delay) {

@@ -3913,7 +3913,7 @@ MonoBehaviour:
   showPrefabGroups: 1
   instantiatePrefabsAsAdded: 1
   equipmentObjects: []
-  cacheTypes: 1
+  cacheTypes: 0
 --- !u!114 &588785712920894863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3931,6 +3931,8 @@ MonoBehaviour:
   maxHealth: 300
   passiveRegen: 1
   passiveRegenHealthPerSecond: 1
+  deathEffectPrefab: {fileID: 3659620918895032952, guid: eb724a43f0b2bb74c8d786e5f4d55ee4,
+    type: 3}
   characterID: 2
   destroyDelay: 0.5
   regenInterval: 1
