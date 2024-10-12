@@ -1,36 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="15.1">
-  <zoom_level>9</zoom_level>
+  <zoom_level>7</zoom_level>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1026</x>
-      <y>36</y>
-      <w>27</w>
-      <h>72</h>
+      <x>1092</x>
+      <y>175</y>
+      <w>70</w>
+      <h>105</h>
     </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>963</x>
-      <y>90</y>
-      <w>144</w>
-      <h>54</h>
-    </coordinates>
-    <panel_attributes>First Time
-Game Start</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=-&gt;
+Start Game</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
   </element>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>1017</x>
-      <y>9</y>
-      <w>36</w>
-      <h>36</h>
+      <x>1085</x>
+      <y>154</y>
+      <w>28</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>type=initial</panel_attributes>
     <additional_attributes/>
@@ -38,317 +27,116 @@ Game Start</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>945</x>
-      <y>189</y>
-      <w>189</w>
-      <h>36</h>
+      <x>1029</x>
+      <y>266</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>Start Tutorial Wave</panel_attributes>
+    <panel_attributes>Main Menu</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1026</x>
-      <y>135</y>
-      <w>27</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>945</x>
-      <y>270</y>
-      <w>189</w>
-      <h>36</h>
+      <x>1029</x>
+      <y>399</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>Complete Tutorial Wave</panel_attributes>
+    <panel_attributes>Begin Game</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1026</x>
-      <y>216</y>
-      <w>27</w>
-      <h>72</h>
+      <x>1092</x>
+      <y>287</y>
+      <w>112</w>
+      <h>126</h>
     </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>945</x>
-      <y>414</y>
-      <w>189</w>
-      <h>36</h>
-    </coordinates>
-    <panel_attributes>Game Start</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1026</x>
-      <y>297</y>
-      <w>27</w>
-      <h>135</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+    <panel_attributes>lt=-&gt;
+Selects "New Game"</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
   </element>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>1269</x>
-      <y>414</y>
-      <w>36</w>
-      <h>36</h>
-    </coordinates>
-    <panel_attributes>type=final</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1125</x>
-      <y>423</y>
-      <w>162</w>
-      <h>27</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>160.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>630</x>
-      <y>495</y>
-      <w>801</w>
-      <h>306</h>
-    </coordinates>
-    <panel_attributes>Wave
---
-valign=top</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1026</x>
-      <y>441</y>
-      <w>27</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>1530</x>
-      <y>621</y>
-      <w>135</w>
-      <h>36</h>
-    </coordinates>
-    <panel_attributes>Game Paused</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLSpecialState</id>
-    <coordinates>
-      <x>1017</x>
-      <y>1089</y>
-      <w>72</w>
-      <h>72</h>
+      <x>1316</x>
+      <y>357</y>
+      <w>28</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>type=flow_final</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>954</x>
-      <y>936</y>
-      <w>171</w>
-      <h>54</h>
-    </coordinates>
-    <panel_attributes>Wave Completed</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <id>Relation</id>
     <coordinates>
-      <x>405</x>
-      <y>612</y>
-      <w>414</w>
-      <h>324</h>
+      <x>1169</x>
+      <y>266</y>
+      <w>175</w>
+      <h>105</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
-m1=NO</panel_attributes>
-    <additional_attributes>420.0;340.0;420.0;300.0;10.0;300.0;10.0;10.0;250.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1026</x>
-      <y>693</y>
-      <w>144</w>
-      <h>153</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;
-m1=YES</panel_attributes>
-    <additional_attributes>70.0;10.0;140.0;10.0;140.0;90.0;10.0;90.0;10.0;150.0</additional_attributes>
+Selects "Exit"</panel_attributes>
+    <additional_attributes>10.0;20.0;230.0;20.0;230.0;130.0</additional_attributes>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>954</x>
-      <y>828</y>
-      <w>171</w>
-      <h>54</h>
+      <x>770</x>
+      <y>336</y>
+      <w>84</w>
+      <h>49</h>
     </coordinates>
-    <panel_attributes>Game Save</panel_attributes>
+    <panel_attributes>non-functional
+in prototype
+symbol=substate</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1026</x>
-      <y>873</y>
-      <w>27</w>
-      <h>81</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLSpecialState</id>
-    <coordinates>
-      <x>738</x>
-      <y>918</y>
-      <w>90</w>
-      <h>90</h>
-    </coordinates>
-    <panel_attributes>Player Exit
-type=decision</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>774</x>
-      <y>999</y>
-      <w>261</w>
-      <h>144</h>
+      <x>805</x>
+      <y>266</y>
+      <w>238</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
-m1=YES</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;140.0;270.0;140.0</additional_attributes>
+Selects "Options"</panel_attributes>
+    <additional_attributes>320.0;20.0;10.0;20.0;10.0;100.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>819</x>
-      <y>954</y>
-      <w>153</w>
-      <h>27</h>
+      <x>1092</x>
+      <y>420</y>
+      <w>21</w>
+      <h>98</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1305</x>
-      <y>630</y>
-      <w>243</w>
-      <h>27</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;250.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLSpecialState</id>
-    <coordinates>
-      <x>1719</x>
-      <y>585</y>
-      <w>108</w>
-      <h>108</h>
-    </coordinates>
-    <panel_attributes>Player Exit
-type=decision</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1422</x>
-      <y>549</y>
-      <w>387</w>
-      <h>54</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;
-m1=NO</panel_attributes>
-    <additional_attributes>390.0;40.0;390.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1656</x>
-      <y>630</y>
-      <w>81</w>
-      <h>27</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1080</x>
-      <y>684</y>
-      <w>738</w>
-      <h>459</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;
-m1=YES</panel_attributes>
-    <additional_attributes>770.0;10.0;770.0;490.0;10.0;490.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>972</x>
-      <y>567</y>
-      <w>126</w>
-      <h>45</h>
+      <x>791</x>
+      <y>504</y>
+      <w>623</w>
+      <h>385</h>
     </coordinates>
-    <panel_attributes>Spawn number of
-enemies</panel_attributes>
+    <panel_attributes>In Level
+--
+valign=top</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1026</x>
-      <y>531</y>
-      <w>27</w>
-      <h>54</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>1026</x>
-      <y>522</y>
-      <w>18</w>
-      <h>18</h>
+      <x>1092</x>
+      <y>532</y>
+      <w>14</w>
+      <h>14</h>
     </coordinates>
     <panel_attributes>type=final</panel_attributes>
     <additional_attributes/>
@@ -356,92 +144,226 @@ enemies</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1089</x>
-      <y>576</y>
-      <w>108</w>
-      <h>27</h>
+      <x>1092</x>
+      <y>539</y>
+      <w>21</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;100.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>873</x>
-      <y>576</y>
-      <w>117</w>
-      <h>27</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>756</x>
-      <y>558</y>
-      <w>126</w>
-      <h>54</h>
-    </coordinates>
-    <panel_attributes>Last enemy killed</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>1179</x>
+      <x>1043</x>
       <y>567</y>
-      <w>117</w>
-      <h>36</h>
+      <w>112</w>
+      <h>35</h>
     </coordinates>
-    <panel_attributes>Player killed</panel_attributes>
+    <panel_attributes>Pre-existing
+enemies patrolling</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1197</x>
-      <y>423</y>
-      <w>54</w>
-      <h>162</h>
+      <x>1099</x>
+      <y>525</y>
+      <w>154</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+Player is killed</panel_attributes>
+    <additional_attributes>80.0;80.0;170.0;80.0;170.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1092</x>
+      <y>595</y>
+      <w>161</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+Last pre-existing emeny is killed</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>1043</x>
+      <y>686</y>
+      <w>112</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Wave</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1148</x>
+      <y>532</y>
+      <w>182</w>
+      <h>182</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>40.0;160.0;40.0;130.0;10.0;130.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;240.0;240.0;240.0;240.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1092</x>
+      <y>714</y>
+      <w>133</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+
+Last enemy in wave killed</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>847</x>
+      <y>980</y>
+      <w>112</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>Level Transition</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>728</x>
+      <y>693</y>
+      <w>133</w>
+      <h>322</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+m1=Player corsses bridge</panel_attributes>
+    <additional_attributes>170.0;430.0;10.0;430.0;10.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>1624</x>
+      <y>658</y>
+      <w>84</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>non-functional
+in prototype
+symbol=substate</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1407</x>
+      <y>672</y>
+      <w>231</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+Player pauses game</panel_attributes>
+    <additional_attributes>10.0;20.0;310.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>981</x>
-      <y>657</y>
-      <w>108</w>
-      <h>90</h>
+      <x>1071</x>
+      <y>966</y>
+      <w>98</w>
+      <h>56</h>
     </coordinates>
-    <panel_attributes>Last mini
-wave?
-type=decision</panel_attributes>
+    <panel_attributes>type=decision
+Last Level?</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>810</x>
-      <y>603</y>
-      <w>243</w>
-      <h>72</h>
+      <x>1162</x>
+      <y>980</y>
+      <w>133</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;40.0;250.0;40.0;250.0;60.0</additional_attributes>
+    <panel_attributes>lt=-&gt;
+YES</panel_attributes>
+    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>693</x>
-      <y>522</y>
-      <w>351</w>
-      <h>207</h>
+      <x>952</x>
+      <y>980</y>
+      <w>133</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+NO</panel_attributes>
+    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>1281</x>
+      <y>980</y>
+      <w>105</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>Game Complete</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>581</x>
+      <y>196</y>
+      <w>819</w>
+      <h>910</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+m1=Time elapse</panel_attributes>
+    <additional_attributes>1080.0;1160.0;1080.0;1280.0;10.0;1280.0;10.0;10.0;700.0;10.0;700.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>1043</x>
+      <y>784</y>
+      <w>112</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>type=decision
+Last Wave?</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1113</x>
+      <y>798</y>
+      <w>140</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+m1=YES</panel_attributes>
+    <additional_attributes>60.0;10.0;180.0;10.0;180.0;170.0;10.0;170.0;10.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>987</x>
+      <y>693</y>
+      <w>70</w>
+      <h>133</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 m1=NO</panel_attributes>
-    <additional_attributes>320.0;200.0;10.0;200.0;10.0;10.0;370.0;10.0</additional_attributes>
+    <additional_attributes>80.0;160.0;10.0;160.0;10.0;10.0;80.0;10.0</additional_attributes>
   </element>
 </diagram>
