@@ -1,43 +1,22 @@
 
 using System.Collections;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class HulkController : EnemyController
 {
-    [Header("Movement")]
-    [SerializeField] private float turnAndFaceSpeed = 5f;
-    [SerializeField] private float followUpdateRate = 2f;
-    [Tooltip("This multiplies with attakc range to set the stopping distance of the navmesh agent.")]
-    [SerializeField] private float attackOffsetMuliplier = 0.8f;
-
     protected override void Start() {
         base.Start();
 
-        onStateChanged += StateMonitor;
         GetComponent<health_component>().onDeath += OnDeath;
 
-        _navMeshAgent.updateRotation = false;
-    }
-    public void StateMonitor(EnemyState newState)
-    {
-        if(newState == EnemyState.Fight)
-        {
-            // if only just entered fight state, cooldown before attacking
-            isCooledDown = false;
-            StartCoroutine(Cooldown());
-            
-            _navMeshAgent.stoppingDistance = attackRange*attackOffsetMuliplier;
-            StartCoroutine(UpdateTrackingPosition());
-        }
+        StartCoroutine(UpdateTrackingPosition());
     }
     void OnDeath()
     {
         //Debug.Log("hulk died earleir than expexted");
         // Stop all coroutines
         StopAllCoroutines();
-
-        // Disable the navmesh agent
-        enemyState = EnemyState.Dead;
 
         // Disable the collider
         GetComponent<Collider>().enabled = false;
@@ -57,21 +36,6 @@ public class HulkController : EnemyController
         }
 
         NavMeshFacingUpdate();
-    }
-    private void NavMeshFacingUpdate() {
-        if (_navMeshAgent.hasPath) {            
-            Vector3 direction = _navMeshAgent.desiredVelocity.normalized;
-
-            // Optionally, rotate the character to face the direction of movement
-            if (direction != Vector3.zero)
-            {
-                turnDirection = direction;
-
-                if (turnAndFaceCoroutine == null && !CheckFacing(transform.position + direction)) {
-                    turnAndFaceCoroutine = StartCoroutine(TurnAndFace(transform.position + direction));
-                }
-            }
-        }
     }
     public override void Attack()
     {
@@ -105,69 +69,10 @@ public class HulkController : EnemyController
         // Cooldown before attacking again
         StartCoroutine(Cooldown());
     }
-    IEnumerator UpdateTrackingPosition()
-    {
-        while (true)
-        {
-            yield return new WaitUntil(() => !isAttacking);
 
-            float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
-
-            if (distanceToPlayer > attackRange*attackOffsetMuliplier) {
-                if (_navMeshAgent.destination != playerPosition) {
-                    _navMeshAgent.SetDestination(playerPosition);
-
-                    // Update facing direction
-                    // Set the target for the player
-                    Vector3 target = playerPosition;
-                    // Replace target with the next point in the path if it exists
-                    if (_navMeshAgent.path.corners.Length > 1)
-                        target = _navMeshAgent.path.corners[1];
-
-                    // Stop before turning
-                    _navMeshAgent.isStopped = true;
-                    // Turn and face the next point in the path
-                    turnAndFaceCoroutine = StartCoroutine(TurnAndFace(target));
-                    yield return new WaitUntil(() => turnAndFaceCoroutine == null);
-                    
-                    _navMeshAgent.isStopped = false;
-                }
-            }
-            else {
-                _navMeshAgent.isStopped = true;
-
-                turnAndFaceCoroutine = StartCoroutine(TurnAndFace(playerPosition));
-            }
-            
-            yield return new WaitForSeconds(followUpdateRate);
-        }
-    }
-    private Coroutine _turnAndFaceCoroutine = null;
-
-    // Property to encapsulate coroutine management
-    private Coroutine turnAndFaceCoroutine
-    {
-        get { return _turnAndFaceCoroutine; }
-        set
-        {
-            // Stop the current coroutine if it's already running
-            if (_turnAndFaceCoroutine != null)
-            {
-                StopCoroutine(_turnAndFaceCoroutine);
-            }
-
-            // Start the new coroutine if the value is not null
-            _turnAndFaceCoroutine = value;
-        }
-    }
-    bool CheckFacing (Vector3 targetPosition) {
-        Vector3 directionToTarget = targetPosition - transform.position;
-        float angle = Vector3.SignedAngle(transform.forward, directionToTarget, Vector3.up);
-        return Mathf.Abs(angle) < 1f;
-    }
     [Tooltip("The angle at which the enemy will play an animation to turn.")]
     [SerializeField] private float _turnAnimationAngle = 70f;
-    IEnumerator TurnAndFace(Vector3 targetPosition, float turnAndFaceSpeedModifier = 1f)
+    protected override IEnumerator TurnAndFace(Vector3 targetPosition, float turnAndFaceSpeedModifier = 1f)
     {        
         // Calculate direction to the target
         Vector3 directionToTarget = targetPosition - transform.position;
@@ -182,14 +87,14 @@ public class HulkController : EnemyController
 
         // TURNING ANIMATION
         // Check angle is greater than _turnAnimationAngle and turn right animation if so
-        if (initialAngle > 70f && initialAngle < 180f) {
+        if (initialAngle > _turnAnimationAngle && initialAngle < 180f) {
             _anim.SetTrigger("turnRight");
             if (!_navMeshAgent.isStopped) {
                 _navMeshAgent.isStopped = true;
             }
         }
         // Check angle is less than -_turnAnimationAngle and turn left animation if so
-        else if (initialAngle < -70f && initialAngle > -180f) {
+        else if (initialAngle < -_turnAnimationAngle && initialAngle > -180f) {
             _anim.SetTrigger("turnLeft");
             if (!_navMeshAgent.isStopped) {
                 _navMeshAgent.isStopped = true;
@@ -247,10 +152,8 @@ public class HulkController : EnemyController
         }
     
     }
-    Vector3 turnDirection;
     private void OnDrawGizmos() {
         // Draw line to show direction turning to
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + turnDirection);
     }
 }

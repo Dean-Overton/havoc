@@ -2243,6 +2243,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a5427a8e9d58cd419680ffaa958fe13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnAndFaceSpeed: 0.5
+  followUpdateRate: 0.5
+  attackOffsetMuliplier: 0.8
   playerPosition: {x: 0, y: 0, z: 0}
   _player: {fileID: 0}
   _playerSightRange: 35
@@ -2252,9 +2255,6 @@ MonoBehaviour:
   attackCooldown: 1.5
   isAttacking: 0
   isCooledDown: 1
-  turnAndFaceSpeed: 0.5
-  followUpdateRate: 0.5
-  attackOffsetMuliplier: 0.8
   _turnAnimationAngle: 70
 --- !u!114 &6200416066636726476
 MonoBehaviour:

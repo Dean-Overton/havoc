@@ -9,8 +9,6 @@ public class PlantController : EnemyController
 {
     [Space]
     [SerializeField] private int attackSwipeDamage = 20;
-    [SerializeField] private float turnAndFaceSpeed = 5f;
-    [SerializeField] private float turnAndFaceUpdateTime = 1f;
 
     [Header("Cast Attack Settings")]
     [SerializeField] private bool enableCastAttack = true;
@@ -28,17 +26,13 @@ public class PlantController : EnemyController
     
     [SerializeField] private int jumpDamage = 30;
 
-    [Header("Movement Settings")]
+    [Header("Movement")]
     [SerializeField] bool enablePlayerFollow = true;
-    [SerializeField] private float followSpeed = 2f;
-    [SerializeField] private float followUpdateRate = 2f;
-    [SerializeField] private float stopDistance = 2f;
     
     protected override void Start() {
         base.Start();
 
         onStateChanged += StateMonitor;
-        GetComponent<health_component>().onDeath += OnDeath;
     }
     public void StateMonitor(EnemyState newState)
     {
@@ -49,30 +43,25 @@ public class PlantController : EnemyController
 
             // if only just entered fight state, cooldown before attacking
             isCooledDown = false;
-            StartCoroutine(Cooldown());
-
-            if (!enablePlayerFollow)
-                StartCoroutine(UpdateFacingDirection());
+            StartCoroutine(Cooldown());           
             
             if (enablePlayerFollow) {
-                GetComponent<NavMeshAgent>().stoppingDistance = jumpAttackDistanceMin;
                 StartCoroutine(UpdateTrackingPosition());
-                StartCoroutine(UpdateMovementFacingDirection());
             }
         }
         else if(newState == EnemyState.Patrol)
         {
-            // Die
-            _anim.SetTrigger("goDead");
-
-            StopCoroutine(UpdateFacingDirection());
+            StopCoroutine(UpdateTrackingPosition());
+        }
+        else if(newState == EnemyState.Dead) {
+            OnDeath ();
         }
     }
-    void OnDeath()
+    private void OnDeath()
     {
         // Stop all coroutines
         StopAllCoroutines();
-
+        Debug.Log("Plant died");
         // Disable the navmesh agent
         GetComponent<NavMeshAgent>().enabled = false;
 
@@ -80,7 +69,7 @@ public class PlantController : EnemyController
         GetComponent<Collider>().enabled = false;
 
         // Trigger the death animation
-        _anim.SetTrigger("goDead");
+        _anim.SetTrigger("death");
     }
     protected override void Update()
     {
@@ -97,90 +86,22 @@ public class PlantController : EnemyController
             if (!GetComponent<NavMeshAgent>().isStopped && enablePlayerFollow)
                 _anim.SetFloat("locomotion", 1f);
             
-            if (isAttacking)
+            if (isAttacking || enemyState == EnemyState.Patrol || enemyState == EnemyState.Dead || !enablePlayerFollow)
                 _anim.SetFloat("locomotion", 0f);
+            
+            if (enablePlayerFollow)
+                NavMeshFacingUpdate();
 
-        }
-    }
-    IEnumerator UpdateTrackingPosition()
-    {
-        while (true)
-        {
-            float distanceToPlayer = DistanceIgnoreY(transform.position, playerPosition);
-
-            if (distanceToPlayer > stopDistance) {
-                GetComponent<NavMeshAgent>().isStopped = false;
-                GetComponent<NavMeshAgent>().SetDestination(playerPosition);
-            }
+                if (_navMeshAgent.isStopped) {
+                    if (turnAndFaceCoroutine == null && !CheckFacing(playerPosition)) {
+                        turnAndFaceCoroutine = StartCoroutine(TurnAndFace(playerPosition));
+                    }
+                }
             else {
-                GetComponent<NavMeshAgent>().isStopped = true;
-                StartCoroutine(UpdateMovementFacingDirection());
+                if (turnAndFaceCoroutine == null && !CheckFacing(playerPosition)) {
+                    turnAndFaceCoroutine = StartCoroutine(TurnAndFace(playerPosition));
+                }
             }
-            
-            yield return new WaitForSeconds(followUpdateRate);
-        }
-    }
-    IEnumerator UpdateMovementFacingDirection () {
-        Vector3 direction = (playerPosition - transform.position).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-        // Check facing within 1 degree of player
-        while (Quaternion.Angle(transform.rotation, targetRotation) > 10f)
-        {   
-            yield return new WaitUntil(() => !isAttacking);
-
-            float angle = Quaternion.Angle(transform.rotation, targetRotation);
-            // map angle to 1 to 0, 1 being 180 degrees and 0 being 0 degrees
-            float animationSpeed = Mathf.Clamp01(angle / 90 + 0.2f);
-
-            // Update the direction to face the player
-            direction = (playerPosition - transform.position).normalized;
-            
-            // Calculate the rotation towards the player
-            targetRotation = Quaternion.LookRotation(direction);
-
-            // Smoothly rotate towards the target rotation over time
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnAndFaceSpeed);
-
-            // Wait for the next frame before continuing the loop
-            yield return null;
-        }
-    }
-    IEnumerator UpdateFacingDirection()
-    {
-        while(true)
-        {   
-            // Calculate rotation to face player
-            Vector3 direction = (playerPosition - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            // Check facing within 1 degree of player
-            while (Quaternion.Angle(transform.rotation, targetRotation) > 10f)
-            {   
-                yield return new WaitUntil(() => !isAttacking);
-
-                float angle = Quaternion.Angle(transform.rotation, targetRotation);
-                // map angle to 1 to 0, 1 being 180 degrees and 0 being 0 degrees
-                float animationSpeed = Mathf.Clamp01(angle / 90 + 0.2f);
-                // Slow tread backwards while turning
-                if (GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
-                    _anim.SetFloat("locomotion", -animationSpeed);
-
-                // Update the direction to face the player
-                direction = (playerPosition - transform.position).normalized;
-                
-                // Calculate the rotation towards the player
-                targetRotation = Quaternion.LookRotation(direction);
-
-                // Smoothly rotate towards the target rotation over time
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnAndFaceSpeed);
-
-                // Wait for the next frame before continuing the loop
-                yield return null;
-            }
-            _anim.SetFloat("locomotion", 0f);
-
-            yield return new WaitForSeconds(turnAndFaceUpdateTime);
         }
     }
     bool canCastAttack = false;
@@ -202,7 +123,6 @@ public class PlantController : EnemyController
             canJumpAttack = false;
             return;
         }
-
         canJumpAttack = true;
         Attack();
     }
@@ -246,25 +166,23 @@ public class PlantController : EnemyController
         if(!isCooledDown || isAttacking) 
             return;
 
+        isAttacking = true;
+        isCooledDown = false;
         // Randomly choose an attack method
         switch (GetAttackMethod())
         {
             case 1:
-                isAttacking = true;
-                isCooledDown = false;
                 StartCoroutine(SwipeAttack());
                 break;
             case 2:
-                isAttacking = true;
-                isCooledDown = false;
                 StartCoroutine(CastAttack());
                 break;
             case 3:
-                isAttacking = true;
-                isCooledDown = false;
                 StartCoroutine(JumpAttack());
                 break;
             default:
+                isAttacking = false;
+                isCooledDown = true;
                 Debug.Log("No attack method selected");
                 break;
         }
@@ -303,32 +221,37 @@ public class PlantController : EnemyController
     }
     bool canJumpAttack = false;
     private IEnumerator JumpAttack() {
-        Debug.Log("Attack method: Jump Attack. Started");
+        while (isAttacking) {
+            // Ensure navmesh is set to destination
+            if (!_navMeshAgent.hasPath) {
+                Vector3 attackDestination = transform.position + transform.forward * jumpAttackDistanceMin;
+                _navMeshAgent.SetDestination(attackDestination);
+                _navMeshAgent.isStopped = false;
+            }
+            Debug.Log("Attack method: Jump Attack. Started");
 
-        // Start jump animation
-        _anim.SetTrigger("jump");
-        Vector3 targetPosition = playerPosition - transform.forward * (attackRange/2);
+            // Start jump animation
+            _anim.SetTrigger("jump");
 
-        while (DistanceIgnoreY(transform.position, targetPosition) > 0.5f)
-        {
-            // Move towards the player
-            GetComponent<Rigidbody>().MovePosition(Vector3.MoveTowards(transform.position, targetPosition, jumpAttackSpeed * Time.deltaTime));
+            float normalSpeed = _navMeshAgent.speed;
+            _navMeshAgent.speed = jumpAttackSpeed;
+            yield return new WaitForSeconds(2f);
             
-            yield return null;
+            Debug.Log("Jump attack landed");
+            _anim.SetTrigger("attack1");
+
+            yield return new WaitForSeconds(0.6f);
+            // Apply damage to player
+            ApplySwipeDamage(jumpDamage);
+
+            // Wait for jump animation to finish
+            yield return new WaitForSeconds(0.6f);
+
+            _navMeshAgent.speed = normalSpeed;
+            isAttacking = false;
+            StartCoroutine(Cooldown());
         }
-        Debug.Log("Jump attack landed");
-        _anim.SetTrigger("attack1");
-
-        // Apply damage to player
-        ApplySwipeDamage(jumpDamage);
-
-        // Wait for jump animation to finish
-        yield return new WaitForSeconds(0.6f);
-
-        isAttacking = false;
-        StartCoroutine(Cooldown());
     }
-    
     private IEnumerator CastAttack() {
         Debug.Log("Attack method: Cast. Started");
         // Start cast animation
@@ -358,7 +281,6 @@ public class PlantController : EnemyController
         isAttacking = false;
         StartCoroutine(Cooldown());
     }
-    
     public void ApplySwipeDamage(int thisDamage = 20)
     {
         // do phyics collision in front of plant and check if player is hit

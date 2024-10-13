@@ -374,9 +374,6 @@ AnimatorStateMachine:
     m_State: {fileID: -3933999343808546057}
     m_Position: {x: 170, y: 70, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 4902435070220919741}
-    m_Position: {x: 183.42859, y: -25.658691, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: -7064448922131004400}
     m_Position: {x: 430, y: 240, z: 0}
   - serializedVersion: 1
@@ -621,32 +618,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc8f5e263d716342b3e38ec9fb8d360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1102 &4902435070220919741
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: mutant breathing idle
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a90eb7c7772f98041aa36d8e9b01d0b9, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1101 &5339680843070194075
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

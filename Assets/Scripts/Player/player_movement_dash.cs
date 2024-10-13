@@ -122,6 +122,7 @@ public class TeleportSlash : MonoBehaviour
         // Move the character instantly to the target position
         transform.position = targetPosition;
 
+        AudioManager.instance.Play("SlashSound");
         // Spawn the line at the start and end points to visualize the teleport
         SpawnTeleportLine(transform.position - teleportDirection * teleportDistance, transform.position);
 
