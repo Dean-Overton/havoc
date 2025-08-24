@@ -1,4 +1,4 @@
-# Havoc  -  *By Noughty Nemesis*
+# Havoc
 
 | Collaborators |
 | :-----------: |
